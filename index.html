@@ -1091,6 +1091,7 @@
       }
 
       function showToast(message) {
+        if (!els.toastContainer) return;
         const div = document.createElement('div');
         div.className = 'genesis-toast';
         div.textContent = message;
@@ -1101,27 +1102,41 @@
         }, 2600);
       }
 
+      // Safe fallback copy for Android WebViews & iFrames
+      function fallbackCopyText(val, label) {
+        const temp = document.createElement('textarea');
+        temp.value = val;
+        temp.setAttribute('readonly', '');
+        temp.style.position = 'fixed';
+        temp.style.top = '0';
+        temp.style.left = '0';
+        temp.style.opacity = '0';
+        document.body.appendChild(temp);
+        temp.focus();
+        temp.select();
+        try {
+          const ok = document.execCommand('copy');
+          showToast(ok ? `${label} berjaya disalin!` : 'Gagal menyalin teks.');
+        } catch (err) {
+          showToast('Gagal menyalin teks.');
+        } finally {
+          document.body.removeChild(temp);
+        }
+      }
+
       function copyToClipboard(text, label = 'Teks') {
         const val = String(text || '').trim();
         if (!val) {
           showToast('Tiada teks untuk disalin.');
           return;
         }
-        const temp = document.createElement('textarea');
-        temp.value = val;
-        temp.style.position = 'fixed';
-        temp.style.opacity = '0';
-        document.body.appendChild(temp);
-        temp.focus();
-        temp.select();
-        try {
-          document.execCommand('copy');
-          showToast(`${label} berjaya disalin!`);
-        } catch (err) {
-          showToast('Gagal menyalin teks.');
-        } finally {
-          document.body.removeChild(temp);
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function' && window.isSecureContext) {
+          navigator.clipboard.writeText(val)
+            .then(() => showToast(`${label} berjaya disalin!`))
+            .catch(() => fallbackCopyText(val, label));
+          return;
         }
+        fallbackCopyText(val, label);
       }
 
       function autoResizeTextarea(el) {
@@ -1374,9 +1389,102 @@
         });
       }
 
+      // Accept Android Gallery files even when MIME type is empty or application/octet-stream
+      function isSupportedImageFile(file) {
+        if (!file) return false;
+        const type = String(file.type || '').toLowerCase();
+        if (type.startsWith('image/')) return true;
+        if (!type || type === 'application/octet-stream') return true;
+        return /\.(jpe?g|png|webp|gif|bmp|heic|heif|avif)$/i.test(file.name || '');
+      }
+
+      // Resize/compress large Android camera photos via canvas to prevent browser memory crash/reload
+      async function processImageFile(file) {
+        const MAX_DIM = 1280;
+        const JPEG_QUALITY = 0.85;
+
+        const compressViaCanvas = () => new Promise((resolve, reject) => {
+          if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
+            reject(new Error('createObjectURL tidak disokong'));
+            return;
+          }
+          const objectUrl = URL.createObjectURL(file);
+          const img = new Image();
+          img.onload = () => {
+            try {
+              const origW = img.naturalWidth || img.width || 0;
+              const origH = img.naturalHeight || img.height || 0;
+              if (!origW || !origH) {
+                throw new Error('Dimensi imej tidak sah');
+              }
+
+              let targetW = origW;
+              let targetH = origH;
+              if (origW > MAX_DIM || origH > MAX_DIM) {
+                const scale = Math.min(MAX_DIM / origW, MAX_DIM / origH);
+                targetW = Math.max(1, Math.round(origW * scale));
+                targetH = Math.max(1, Math.round(origH * scale));
+              }
+
+              const canvas = document.createElement('canvas');
+              canvas.width = targetW;
+              canvas.height = targetH;
+              const ctx = canvas.getContext('2d');
+              if (!ctx) throw new Error('Kanvas tidak tersedia');
+
+              ctx.drawImage(img, 0, 0, targetW, targetH);
+              const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
+              const base64 = dataUrl.split(',')[1] || '';
+              if (!base64) throw new Error('Data imej kosong');
+
+              resolve({
+                mimeType: 'image/jpeg',
+                base64,
+                dataUrl
+              });
+            } catch (err) {
+              reject(err);
+            } finally {
+              URL.revokeObjectURL(objectUrl);
+            }
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error('Gagal menyahkod imej melalui kanvas'));
+          };
+          img.src = objectUrl;
+        });
+
+        try {
+          return await compressViaCanvas();
+        } catch (_) {
+          const rawDataUrl = await readFileAsDataUrl(file);
+          const parts = String(rawDataUrl || '').split(',');
+          const meta = parts[0] || '';
+          const base64 = parts[1] || '';
+          if (!base64) throw new Error('Fail gambar kosong.');
+          const mimeMatch = meta.match(/data:(.*?);base64/);
+          let mimeType = (mimeMatch && mimeMatch[1]) ? mimeMatch[1].toLowerCase() : String(file.type || '').toLowerCase();
+          if (!mimeType || mimeType === 'application/octet-stream' || !mimeType.startsWith('image/')) {
+            mimeType = 'image/jpeg';
+          }
+          return {
+            mimeType,
+            base64,
+            dataUrl: `data:${mimeType};base64,${base64}`
+          };
+        }
+      }
+
       async function handleImageFiles(fileList) {
-        const files = Array.from(fileList || []).filter((f) => f.type && f.type.startsWith('image/'));
-        if (!files.length) return;
+        const rawFiles = Array.from(fileList || []);
+        if (!rawFiles.length) return;
+
+        const files = rawFiles.filter(isSupportedImageFile);
+        if (!files.length) {
+          showToast('Fail yang dipilih tidak disokong. Sila pilih gambar (JPG/PNG/WEBP).');
+          return;
+        }
 
         const remaining = 6 - state.uploadedImages.length;
         if (remaining <= 0) {
@@ -1385,37 +1493,44 @@
         }
 
         const toAdd = files.slice(0, remaining);
+        let addedCount = 0;
+
         for (const file of toAdd) {
           try {
-            const dataUrl = await readFileAsDataUrl(file);
-            const [meta, base64] = String(dataUrl).split(',');
-            const mimeMatch = meta.match(/data:(.*?);base64/);
+            const processed = await processImageFile(file);
             state.uploadedImages.push({
               id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
               name: file.name || 'product.jpg',
-              mimeType: mimeMatch ? mimeMatch[1] : (file.type || 'image/jpeg'),
-              base64,
-              dataUrl
+              mimeType: processed.mimeType,
+              base64: processed.base64,
+              dataUrl: processed.dataUrl
             });
+            addedCount += 1;
           } catch (err) {
             showToast('Sebahagian gambar gagal dimuat naik.');
           }
         }
 
+        // Render thumbnails immediately before calling AI vision analysis
         renderUploadedImages();
-        if (state.uploadedImages.length > 0) {
+
+        if (addedCount > 0) {
+          showToast(`${addedCount} gambar produk berjaya dimuat naik!`);
           await analyzeProductImages();
         }
       }
 
       function renderUploadedImages() {
         const count = state.uploadedImages.length;
-        els.imageCountBadge.textContent = `${count} / 6 Gambar`;
+        if (els.imageCountBadge) {
+          els.imageCountBadge.textContent = `${count} / 6 Gambar`;
+        }
+        if (!els.imagePreviewGrid) return;
 
         if (count === 0) {
           els.imagePreviewGrid.classList.add('hidden');
           els.imagePreviewGrid.innerHTML = '';
-          els.visionAnalysisWrap.classList.add('hidden');
+          if (els.visionAnalysisWrap) els.visionAnalysisWrap.classList.add('hidden');
           return;
         }
 
@@ -1444,10 +1559,10 @@
       }
 
       async function analyzeProductImages() {
-        if (!state.uploadedImages.length) return;
+        if (!state.uploadedImages.length || !els.visionAnalysisWrap || !els.visionAnalysisBox) return;
         els.visionAnalysisWrap.classList.remove('hidden');
-        els.visionSpinner.classList.remove('hidden');
-        els.reanalyzeBtn.disabled = true;
+        if (els.visionSpinner) els.visionSpinner.classList.remove('hidden');
+        if (els.reanalyzeBtn) els.reanalyzeBtn.disabled = true;
         els.visionAnalysisBox.value = 'Sedang menganalisis bentuk, warna, logo, label, material & niche produk...';
         autoResizeTextarea(els.visionAnalysisBox);
 
@@ -1469,8 +1584,8 @@
           els.visionAnalysisBox.value = 'Analisis automatik gagal. Anda boleh taip butiran produk secara manual di sini atau klik Analisis Semula.';
           autoResizeTextarea(els.visionAnalysisBox);
         } finally {
-          els.visionSpinner.classList.add('hidden');
-          els.reanalyzeBtn.disabled = false;
+          if (els.visionSpinner) els.visionSpinner.classList.add('hidden');
+          if (els.reanalyzeBtn) els.reanalyzeBtn.disabled = false;
         }
       }
 
@@ -1479,19 +1594,19 @@
       // =============================================================
       function syncStudioPrompts(forceUpdate = false) {
         const charName = state.selectedCharacter === 'Custom Watak'
-          ? (els.customCharacterInput.value.trim() || 'Watak pilihan pengguna')
+          ? ((els.customCharacterInput?.value || '').trim() || 'Watak pilihan pengguna')
           : state.selectedCharacter;
-        const charDetails = els.characterDetails.value.trim();
-        const charTone = els.characterTone.value;
+        const charDetails = (els.characterDetails?.value || '').trim();
+        const charTone = els.characterTone?.value || 'Mesra, Santai & Meyakinkan (UGC)';
 
-        if (forceUpdate || !state.characterPromptEdited) {
+        if (els.characterPromptBox && (forceUpdate || !state.characterPromptEdited)) {
           const lockPrefix = state.characterLock ? '[CHARACTER LOCK AKTIF] ' : '';
           els.characterPromptBox.value = `${lockPrefix}${charName}${charDetails ? ', ' + charDetails : ''}. Ekspresi natural, konsisten di setiap babak, persona: ${charTone}.`;
           autoResizeTextarea(els.characterPromptBox);
         }
 
         const activeLocName = state.selectedLocation === 'Custom Lokasi'
-          ? (els.customLocationInput.value.trim() || 'Custom Lokasi')
+          ? ((els.customLocationInput?.value || '').trim() || 'Custom Lokasi')
           : state.selectedLocation;
         if (els.selectedLocationBadge) {
           els.selectedLocationBadge.textContent = activeLocName;
@@ -1499,6 +1614,7 @@
       }
 
       function renderCharacterGrid() {
+        if (!els.characterGrid) return;
         els.characterGrid.innerHTML = CHARACTER_OPTIONS.map((name) => `
           <button
             type="button"
@@ -1512,7 +1628,9 @@
         els.characterGrid.querySelectorAll('[data-char]').forEach((btn) => {
           btn.addEventListener('click', () => {
             state.selectedCharacter = btn.getAttribute('data-char');
-            els.customCharacterWrap.classList.toggle('hidden', state.selectedCharacter !== 'Custom Watak');
+            if (els.customCharacterWrap) {
+              els.customCharacterWrap.classList.toggle('hidden', state.selectedCharacter !== 'Custom Watak');
+            }
             renderCharacterGrid();
             syncStudioPrompts(false);
           });
@@ -1520,6 +1638,7 @@
       }
 
       function renderLocationGrid() {
+        if (!els.locationGrid) return;
         els.locationGrid.innerHTML = LOCATION_OPTIONS.map((name) => `
           <button
             type="button"
@@ -1533,7 +1652,9 @@
         els.locationGrid.querySelectorAll('[data-loc]').forEach((btn) => {
           btn.addEventListener('click', () => {
             state.selectedLocation = btn.getAttribute('data-loc');
-            els.customLocationWrap.classList.toggle('hidden', state.selectedLocation !== 'Custom Lokasi');
+            if (els.customLocationWrap) {
+              els.customLocationWrap.classList.toggle('hidden', state.selectedLocation !== 'Custom Lokasi');
+            }
             renderLocationGrid();
             syncStudioPrompts(false);
           });
@@ -1541,8 +1662,11 @@
       }
 
       function renderContentStyleGrid() {
+        if (!els.contentStyleGrid) return;
         const count = state.selectedStyles.length;
-        els.selectedStyleBadge.textContent = count === 0 ? 'Auto (AI Pilih)' : `${count} Gaya Dipilih`;
+        if (els.selectedStyleBadge) {
+          els.selectedStyleBadge.textContent = count === 0 ? 'Auto (AI Pilih)' : `${count} Gaya Dipilih`;
+        }
 
         els.contentStyleGrid.innerHTML = CONTENT_STYLES.map((style) => {
           const isActive = state.selectedStyles.includes(style.id);
@@ -1571,44 +1695,51 @@
       }
 
       function renderVideoSettings() {
-        els.videoSettingsBadge.textContent = `${state.videoDuration} Saat • ${state.sceneCount} ${state.sceneCount === 1 ? 'Scene' : 'Scenes'}`;
+        if (els.videoSettingsBadge) {
+          els.videoSettingsBadge.textContent = `${state.videoDuration} Saat • ${state.sceneCount} ${state.sceneCount === 1 ? 'Scene' : 'Scenes'}`;
+        }
 
-        els.videoDurationGrid.innerHTML = VIDEO_DURATIONS.map((sec) => `
-          <button
-            type="button"
-            data-duration="${sec}"
-            class="studio-pill ${state.videoDuration === sec ? 'active' : ''}"
-          >
-            ${sec} Saat
-          </button>
-        `).join('');
+        if (els.videoDurationGrid) {
+          els.videoDurationGrid.innerHTML = VIDEO_DURATIONS.map((sec) => `
+            <button
+              type="button"
+              data-duration="${sec}"
+              class="studio-pill ${state.videoDuration === sec ? 'active' : ''}"
+            >
+              ${sec} Saat
+            </button>
+          `).join('');
 
-        els.sceneCountGrid.innerHTML = SCENE_COUNTS.map((cnt) => `
-          <button
-            type="button"
-            data-scene-count="${cnt}"
-            class="studio-pill ${state.sceneCount === cnt ? 'active' : ''}"
-          >
-            ${cnt} ${cnt === 1 ? 'Scene' : 'Scenes'}
-          </button>
-        `).join('');
-
-        els.videoDurationGrid.querySelectorAll('[data-duration]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            state.videoDuration = Number(btn.getAttribute('data-duration')) || 10;
-            renderVideoSettings();
+          els.videoDurationGrid.querySelectorAll('[data-duration]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              state.videoDuration = Number(btn.getAttribute('data-duration')) || 10;
+              renderVideoSettings();
+            });
           });
-        });
+        }
 
-        els.sceneCountGrid.querySelectorAll('[data-scene-count]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            state.sceneCount = Number(btn.getAttribute('data-scene-count')) || 1;
-            renderVideoSettings();
+        if (els.sceneCountGrid) {
+          els.sceneCountGrid.innerHTML = SCENE_COUNTS.map((cnt) => `
+            <button
+              type="button"
+              data-scene-count="${cnt}"
+              class="studio-pill ${state.sceneCount === cnt ? 'active' : ''}"
+            >
+              ${cnt} ${cnt === 1 ? 'Scene' : 'Scenes'}
+            </button>
+          `).join('');
+
+          els.sceneCountGrid.querySelectorAll('[data-scene-count]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              state.sceneCount = Number(btn.getAttribute('data-scene-count')) || 1;
+              renderVideoSettings();
+            });
           });
-        });
+        }
       }
 
       function renderOutputCheckboxes() {
+        if (!els.outputCheckboxGrid) return;
         els.outputCheckboxGrid.innerHTML = OUTPUT_CHECKBOXES.map((item) => {
           const checked = Boolean(state.selectedOutputs[item.key]);
           return `
@@ -1904,11 +2035,13 @@ ${scenesSummary}`;
         }
 
         state.isGenerating = true;
-        els.generateAllBtn.disabled = true;
-        els.generateBtnSpinner.classList.remove('hidden');
-        els.generateBtnText.textContent = 'SEDANG MENJANA 4 CONTENT PACKS...';
-        els.generationStatusText.classList.remove('hidden');
-        els.generationStatusText.textContent = 'Menjana teks & visual untuk UGC, POV Hand, Commercial Ad & Product Demo...';
+        if (els.generateAllBtn) els.generateAllBtn.disabled = true;
+        if (els.generateBtnSpinner) els.generateBtnSpinner.classList.remove('hidden');
+        if (els.generateBtnText) els.generateBtnText.textContent = 'SEDANG MENJANA 4 CONTENT PACKS...';
+        if (els.generationStatusText) {
+          els.generationStatusText.classList.remove('hidden');
+          els.generationStatusText.textContent = 'Menjana teks & visual untuk UGC, POV Hand, Commercial Ad & Product Demo...';
+        }
 
         try {
           // Initialize isolated pack objects
@@ -1934,7 +2067,7 @@ ${scenesSummary}`;
             };
           });
 
-          els.outputResultsSection.classList.remove('hidden');
+          if (els.outputResultsSection) els.outputResultsSection.classList.remove('hidden');
           renderAllContentPacks();
 
           // 1. Generate text bundles in parallel
@@ -1969,10 +2102,10 @@ ${scenesSummary}`;
           showToast(`Ralat menjana kandungan: ${err.message || 'Sila cuba lagi.'}`);
         } finally {
           state.isGenerating = false;
-          els.generateAllBtn.disabled = false;
-          els.generateBtnSpinner.classList.add('hidden');
-          els.generateBtnText.textContent = 'JANA CONTENT GENESIS AI V2.0';
-          els.generationStatusText.classList.add('hidden');
+          if (els.generateAllBtn) els.generateAllBtn.disabled = false;
+          if (els.generateBtnSpinner) els.generateBtnSpinner.classList.add('hidden');
+          if (els.generateBtnText) els.generateBtnText.textContent = 'JANA CONTENT GENESIS AI V2.0';
+          if (els.generationStatusText) els.generationStatusText.classList.add('hidden');
         }
       }
 
@@ -2178,6 +2311,7 @@ ${scenesSummary}`;
       }
 
       function renderAllContentPacks() {
+        if (!els.contentPacksContainer) return;
         const sel = state.selectedOutputs;
         els.contentPacksContainer.innerHTML = PACK_DEFINITIONS.map((def) => {
           const pack = state.contentPacks[def.id];
@@ -2207,124 +2341,4 @@ ${scenesSummary}`;
             const capsHtml = (pack.captions || []).map((c, idx) =>
               buildSingleOutputBoxHtml(def.id, 'caption', `Caption ${idx + 1}`, c, idx)
             ).join('');
-            blocks.push(`<div class="space-y-1.5">${capsHtml}</div>`);
-          }
-
-          if (sel.dialog) {
-            blocks.push(buildSingleOutputBoxHtml(def.id, 'dialog', 'Dialog / Skrip', pack.dialog));
-          }
-
-          if (sel.voiceover) {
-            blocks.push(buildSingleOutputBoxHtml(def.id, 'voiceover', 'Voice Over', pack.voiceover));
-          }
-
-          if (sel.hashtags) {
-            blocks.push(buildSingleOutputBoxHtml(def.id, 'hashtags', 'Hashtag', pack.hashtags));
-          }
-
-          if (sel.cta) {
-            blocks.push(buildSingleOutputBoxHtml(def.id, 'cta', 'CTA', pack.cta));
-          }
-
-          if (sel.storyboard) {
-            blocks.push(buildStoryboardSectionHtml(def.id, pack));
-          }
-
-          return `
-            <article class="genesis-output-card ${def.accentClass} space-y-2.5">
-              <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-800/80">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-md text-[11px] font-extrabold border ${def.badgeClass}">${def.badge}</span>
-                  <h3 class="text-sm font-extrabold tracking-wide text-white">${def.header}</h3>
-                </div>
-                <button type="button" data-regen-pack="${def.id}" class="genesis-btn-compact">Jana Semula Pek</button>
-              </div>
-
-              <div id="pack-img-slot-${def.id}" class="rounded-xl overflow-hidden bg-slate-950/80 border border-slate-800 p-1.5"></div>
-
-              <div class="space-y-2">
-                ${blocks.join('')}
-              </div>
-            </article>
-          `;
-        }).join('');
-
-        // Hydrate images & auto-resize textareas
-        PACK_DEFINITIONS.forEach((def) => {
-          updatePackImageUI(def.id);
-          if (state.selectedOutputs.storyboard) {
-            updatePackStoryboardImageUI(def.id);
-          }
-        });
-
-        els.contentPacksContainer.querySelectorAll('textarea').forEach(autoResizeTextarea);
-
-        // Bind events inside packs
-        els.contentPacksContainer.querySelectorAll('[data-regen-pack]').forEach((btn) => {
-          btn.addEventListener('click', () => regenerateEntirePack(btn.getAttribute('data-regen-pack')));
-        });
-
-        els.contentPacksContainer.querySelectorAll('[data-regen-sb-img]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            generateSinglePackStoryboardImage(btn.getAttribute('data-regen-sb-img'), getCreativeContext());
-          });
-        });
-
-        els.contentPacksContainer.querySelectorAll('[data-copy-field]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const packId = btn.getAttribute('data-pack');
-            const field = btn.getAttribute('data-copy-field');
-            const idxAttr = btn.getAttribute('data-idx');
-            const idx = idxAttr !== null ? Number(idxAttr) : null;
-            const pack = state.contentPacks[packId];
-            if (!pack) return;
-            let text = '';
-            if (field === 'videoScene') text = pack.videoScenes?.[idx]?.prompt || '';
-            else if (field === 'hook') text = pack.hooks?.[idx] || '';
-            else if (field === 'caption') text = pack.captions?.[idx] || '';
-            else if (field === 'storyboardScene') text = pack.storyboardScenes?.[idx]?.prompt || '';
-            else text = pack[field] || '';
-            copyToClipboard(text, field);
-          });
-        });
-
-        els.contentPacksContainer.querySelectorAll('[data-regen-field]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const packId = btn.getAttribute('data-pack');
-            const field = btn.getAttribute('data-regen-field');
-            const idxAttr = btn.getAttribute('data-idx');
-            const idx = idxAttr !== null ? Number(idxAttr) : null;
-            regeneratePackField(packId, field, idx);
-          });
-        });
-
-        els.contentPacksContainer.querySelectorAll('[data-edit-field]').forEach((ta) => {
-          ta.addEventListener('input', () => {
-            const packId = ta.getAttribute('data-pack');
-            const field = ta.getAttribute('data-edit-field');
-            const idxAttr = ta.getAttribute('data-idx');
-            const idx = idxAttr !== null ? Number(idxAttr) : null;
-            const pack = state.contentPacks[packId];
-            if (!pack) return;
-            if (field === 'videoScene' && pack.videoScenes?.[idx]) pack.videoScenes[idx].prompt = ta.value;
-            else if (field === 'hook' && Array.isArray(pack.hooks)) pack.hooks[idx] = ta.value;
-            else if (field === 'caption' && Array.isArray(pack.captions)) pack.captions[idx] = ta.value;
-            else if (field === 'storyboardScene' && pack.storyboardScenes?.[idx]) pack.storyboardScenes[idx].prompt = ta.value;
-            else pack[field] = ta.value;
-            autoResizeTextarea(ta);
-          });
-        });
-      }
-
-      // =============================================================
-      // 11. EXPORT & RESET
-      // =============================================================
-      function compileAllTextOutput() {
-        const ctx = getCreativeContext();
-        const lines = [
-          'GENESIS AI PROMPT V2.0 — 4 VISUAL CONTENT PACKS',
-          `Produk: ${ctx.productName}`,
-          `Watak: ${ctx.character}`,
-          `Lokasi: ${ctx.location} (${ctx.backgroundLock ? 'Location Lock: ON' : 'Location Lock: OFF'})`,
-          `Gaya Content: ${ctx.styleName}`,
-          `Video Settings: ${ctx.videoDuration} Saat • ${
+            blocks.push(`<div c
