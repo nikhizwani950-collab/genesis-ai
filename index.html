@@ -1265,7 +1265,8 @@
         const status = err?.status || Number((String(err?.message || '').match(/HTTP\s*(\d{3})/i) || [])[1]) || 0;
         const raw = `${err?.message || ''} ${err?.rawBody || ''}`;
 
-        if (status === 403 || /PERMISSION_DENIED|permission denied|API_KEY_INVALID|forbidden/i.test(raw)) {
+      
+  if (status === 403 || /PERMISSION_DENIED|permission denied|API_KEY_INVALID|forbidden/i.test(raw)) {
           return 'Akses servis penjanaan imej disekat (HTTP 403). Model imej memerlukan kebenaran API / API key yang sah atau pengaktifan billing pada projek Google AI Studio jika dijalankan di luar persekitaran Canvas yang disokong. Sila tekan "Cuba Jana Imej Semula".';
         }
         if (status === 429 || /RESOURCE_EXHAUSTED|rate limit|quota/i.test(raw)) {
