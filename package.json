@@ -1,0 +1,9 @@
+{
+  "name": "genesis-ai-webapp-v2",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}
