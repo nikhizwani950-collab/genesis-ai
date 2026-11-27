@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>GENESIS AI PROMPT V2.0 — Premium Neon Studio</title>
+  <link rel="stylesheet" href="./css/webapp-shell.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,6 +38,11 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow-x: hidden;
       min-height: 100vh;
+    }
+
+    body.ga-shell-active {
+      padding-top: 66px;
+      padding-bottom: 84px;
     }
 
     .font-futuristic {
@@ -110,9 +116,10 @@
       box-shadow: 0 0 14px rgba(16, 185, 129, 0.18);
     }
 
-    /* Upload Dropzone */
+    /* Upload Dropzone (Full-area Android Chrome & WebView Touch Target) */
     .genesis-upload-zone {
       position: relative;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -132,6 +139,19 @@
       transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
     }
 
+    .genesis-upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      z-index: 20;
+      cursor: pointer;
+      margin: 0;
+      padding: 0;
+      font-size: 16px;
+    }
+
     .genesis-upload-zone:hover,
     .genesis-upload-zone.drag-active {
       border-color: #67e8f9;
@@ -148,6 +168,7 @@
       background: linear-gradient(135deg, #22d3ee, #3b82f6, #a855f7);
       box-shadow: 0 0 16px rgba(34, 211, 238, 0.28);
       margin-bottom: 10px;
+      pointer-events: none;
     }
 
     .genesis-upload-icon-inner {
@@ -161,7 +182,7 @@
       color: #67e8f9;
     }
 
-    /* Unified Typography & Inputs (14px, line-height 1.6) */
+    /* Unified Typography & Inputs */
     .genesis-input {
       width: 100%;
       background: rgba(7, 12, 28, 0.92);
@@ -211,7 +232,7 @@
       font-size: 14px !important;
     }
 
-    /* Uniform Output Prompt & Analysis Boxes (Wide Horizontal, 14px) */
+    /* Uniform Output Prompt & Analysis Boxes */
     .genesis-prompt-box,
     .genesis-analysis-box {
       width: 100% !important;
@@ -265,7 +286,7 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      padding: 5px 9px;
+      padding: 6px 10px;
       border-radius: 9px;
       font-size: 12px;
       font-weight: 600;
@@ -276,6 +297,7 @@
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
+      text-decoration: none;
     }
 
     .genesis-btn-compact:hover {
@@ -323,7 +345,7 @@
     /* Primary Generate CTA */
     .genesis-cta-btn {
       width: 100%;
-      padding: 11px 14px;
+      padding: 12px 14px;
       border-radius: 14px;
       border: 1px solid rgba(103, 232, 249, 0.55);
       background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 50%, #9333ea 100%);
@@ -356,7 +378,7 @@
     /* Toast */
     #toastContainer {
       position: fixed;
-      bottom: 18px;
+      bottom: 84px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 9999;
@@ -474,7 +496,7 @@
       <div class="genesis-outer-inner p-2.5 sm:p-4 space-y-3">
 
         <!-- =========================================================
-             1. HEADER / LOGO (HORIZONTAL COMPACT)
+             1. HEADER / LOGO (CLEAN SHARED USER UI)
              ========================================================= -->
         <header class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-800/80">
           <div class="flex items-center gap-2.5 min-w-0">
@@ -512,7 +534,7 @@
                 <span class="font-futuristic text-sm sm:text-base font-extrabold bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-300 bg-clip-text text-transparent">
                   PROMPT
                 </span>
-                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/50">
+                <span id="versionSecretBadge" class="px-1.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/50 select-none">
                   V2.0
                 </span>
               </div>
@@ -534,6 +556,27 @@
             Reset
           </button>
         </header>
+
+        <!-- Hidden Owner Settings (Tap V2.0 badge 5x to open if needed) -->
+        <div id="ownerConfigBar" class="hidden genesis-card p-3 space-y-2 border-purple-500/40">
+          <div class="flex items-center justify-between gap-2">
+            <label for="geminiApiKeyInput" class="text-xs font-bold uppercase tracking-wider text-purple-300">
+              Tetapan Kunci AI Pemilik (Pilihan)
+            </label>
+            <button id="closeOwnerBarBtn" type="button" class="text-xs text-slate-400 hover:text-white">Tutup</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <input
+              id="geminiApiKeyInput"
+              type="password"
+              class="genesis-input flex-1"
+              placeholder="Tampal AIzaSy... (Pilihan)"
+            />
+            <button id="saveApiKeyBtn" type="button" class="genesis-btn-compact px-3 py-2.5 text-cyan-300 border-cyan-400/50">
+              Simpan
+            </button>
+          </div>
+        </div>
 
         <!-- =========================================================
              LANGKAH 1 — SOURCE REFERENCE & PRODUCT LOCK
@@ -563,13 +606,13 @@
           </div>
 
           <!-- Android-Friendly Image Upload Box -->
-          <label id="uploadDropZone" for="productImageInput" class="genesis-upload-zone">
+          <div id="uploadDropZone" class="genesis-upload-zone">
             <input
               id="productImageInput"
               type="file"
               accept="image/*"
               multiple
-              class="sr-only"
+              aria-label="Muat naik sehingga 6 gambar produk"
             />
             <div class="genesis-upload-icon-box">
               <div class="genesis-upload-icon-inner">
@@ -580,13 +623,13 @@
                 </svg>
               </div>
             </div>
-            <p class="text-sm sm:text-base font-bold text-white">
+            <p class="text-sm sm:text-base font-bold text-white pointer-events-none">
               Muat naik sehingga <span class="text-cyan-400">6 gambar</span> produk
             </p>
-            <p class="text-xs text-slate-300 mt-1 max-w-md leading-relaxed">
+            <p class="text-xs text-slate-300 mt-1 max-w-md leading-relaxed pointer-events-none">
               Tap atau seret gambar ke sini &bull; AI akan analisis bentuk, warna, logo, label, material &amp; niche automatik
             </p>
-          </label>
+          </div>
 
           <!-- Uploaded Previews -->
           <div id="imagePreviewGrid" class="hidden grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
@@ -872,6 +915,9 @@
   <!-- Toast Container -->
   <div id="toastContainer"></div>
 
+  <!-- WebApp Auth & UNLIMITED ACCESS Shell -->
+  <script type="module" src="./js/webapp-shell.js"></script>
+
   <script>
     (function () {
       'use strict';
@@ -879,8 +925,13 @@
       // =============================================================
       // 1. CONSTANTS & STUDIO DATA
       // =============================================================
-      const apiKey = '';
-      const API_KEY = apiKey;
+      // Pilihan: Letak API Key anda di sini jika mahu penjanaan gambar langsung untuk semua pengguna
+      const SHARED_GEMINI_API_KEY = '';
+
+      function getApiKey() {
+        return (SHARED_GEMINI_API_KEY || localStorage.getItem('genesis_gemini_api_key') || '').trim();
+      }
+
       const TEXT_MODEL = 'gemini-3-flash-preview';
       const IMAGE_GENERATE_CONTENT_MODELS = [
         'gemini-2.5-flash-image-preview',
@@ -996,7 +1047,7 @@
       // 2. APPLICATION STATE
       // =============================================================
       const state = {
-        uploadedImages: [], // { id, name, mimeType, base64, dataUrl }
+        uploadedImages: [],
         visionSummary: '',
         selectedCharacter: 'Wanita Melayu Moden',
         characterLock: true,
@@ -1018,13 +1069,18 @@
           storyboard: false
         },
         isGenerating: false,
-        contentPacks: {} // keyed by pack.id: ugc, pov, commercial, demo
+        contentPacks: {}
       };
 
       // =============================================================
       // 3. DOM REFERENCES
       // =============================================================
       const els = {
+        versionSecretBadge: document.getElementById('versionSecretBadge'),
+        ownerConfigBar: document.getElementById('ownerConfigBar'),
+        closeOwnerBarBtn: document.getElementById('closeOwnerBarBtn'),
+        geminiApiKeyInput: document.getElementById('geminiApiKeyInput'),
+        saveApiKeyBtn: document.getElementById('saveApiKeyBtn'),
         resetAppBtn: document.getElementById('resetAppBtn'),
         imageCountBadge: document.getElementById('imageCountBadge'),
         uploadDropZone: document.getElementById('uploadDropZone'),
@@ -1102,7 +1158,6 @@
         }, 2600);
       }
 
-      // Safe fallback copy for Android WebViews & iFrames
       function fallbackCopyText(val, label) {
         const temp = document.createElement('textarea');
         temp.value = val;
@@ -1173,12 +1228,11 @@
         for (let i = 0; i < count; i++) {
           const start = Number((i * step).toFixed(1));
           const end = i === count - 1 ? total : Number(((i + 1) * step).toFixed(1));
-          const fmt = (n) => (Number.isInteger(n) ? `${n}s` : `${n}s`);
           timings.push({
             sceneNumber: i + 1,
             start,
             end,
-            label: `Scene ${i + 1} — ${fmt(start)} hingga ${fmt(end)}`
+            label: `Scene ${i + 1} — ${start}s hingga ${end}s`
           });
         }
         return timings;
@@ -1221,9 +1275,159 @@
       }
 
       // =============================================================
-      // 5. GEMINI API HELPER WITH BACKOFF & TIMEOUT
+      // 5. BUILT-IN SMART STUDIO ENGINE (WORKS FOR ALL SHARED USERS)
       // =============================================================
-      async function fetchWithBackoff(url, payload, { timeoutMs = 55000, maxRetries = 3 } = {}) {
+      function buildSmartFallbackAnalysis(ctx) {
+        const name = (els.productName?.value || '').trim() || 'Produk Rujukan Utama';
+        const niche = els.productNiche?.value || 'Auto-Detect dari Gambar';
+        const note = (els.customInstruction?.value || '').trim();
+        const imgCount = state.uploadedImages.length;
+
+        return [
+          `Rekod Product Lock Aktif (${imgCount} gambar rujukan dikunci):`,
+          `• Produk & Packaging: ${name} — mengekalkan bentuk asal, struktur botol/pek dan susun atur fizikal daripada gambar rujukan.`,
+          `• Warna & Identiti Visual: Mengekalkan tona warna asal, kontras label, logo jenama dan tulisan tepat pada produk.`,
+          `• Material & Tekstur: Permukaan produk dipaparkan secara natural dengan pantulan cahaya realistik (${niche}).`,
+          note ? `• Fokus Babak Utama: ${note}` : `• Cadangan Sudut Visual: Close-up produk, pegangan tangan POV, dan demonstrasi kegunaan sebenar.`
+        ].join('\n');
+      }
+
+      function buildSmartFallbackPackBundle(def, ctx) {
+        const sbSpec = getStoryboardLayoutSpec(ctx.sceneCount);
+        const prodRef = ctx.uploadedImages.length > 0
+          ? `the exact ${ctx.productName} from the uploaded reference image (strict Product Lock: identical shape, color, logo, label text, and packaging)`
+          : `${ctx.productName}`;
+
+        const charRef = ctx.characterLock
+          ? `${ctx.character}${ctx.characterDetails ? ' (' + ctx.characterDetails + ')' : ''}`
+          : 'a natural Malaysian content creator';
+
+        const locRef = `${ctx.location} with ${ctx.lightingMood}`;
+        const sceneAction = ctx.hasFreeSceneDirection
+          ? `Main storyline action: ${ctx.freeSceneDirection}.`
+          : `Natural authentic product showcase highlighting key benefits for ${ctx.platform}.`;
+
+        const conceptScenes = {
+          ugc: `Authentic vertical 9:16 handheld UGC creator shot of ${charRef} smiling naturally while holding ${prodRef} toward the camera in ${locRef}. ${sceneAction} Shot on smartphone camera, realistic skin texture, warm natural social media aesthetic.`,
+          pov: `First-person POV vertical 9:16 shot looking at a realistic human hand holding and presenting ${prodRef} up close in ${locRef}. ${sceneAction} Crisp product label focus, shallow depth of field, natural daylight.`,
+          commercial: `High-end vertical 9:16 commercial advertising hero shot of ${prodRef} placed elegantly in ${locRef}. ${sceneAction} Studio rim lighting, crisp reflections, premium Malaysian brand campaign aesthetic, 8k photorealistic.`,
+          demo: `Close-up vertical 9:16 product demonstration shot showing ${charRef} actively demonstrating how ${prodRef} works in ${locRef}. ${sceneAction} Clear texture and usage visibility, sharp focus on product.`
+        };
+
+        const imagePrompt = conceptScenes[def.id] || conceptScenes.ugc;
+
+        const videoScenes = ctx.sceneTimings.map((t, idx) => {
+          const focus = idx === 0
+            ? `Hook opening: ${charRef} introduces ${prodRef} directly to camera with engaging movement`
+            : idx === ctx.sceneTimings.length - 1
+              ? `Closing CTA shot: Close-up of ${prodRef} with confident nod and gesture toward checkout`
+              : `Demonstration shot: Smooth camera push-in showing ${prodRef} in active use`;
+          return {
+            sceneNumber: t.sceneNumber,
+            timeRange: t.label,
+            prompt: `${t.label} — Vertical 9:16 video (${def.badge}, style: ${ctx.styleName}) set in ${locRef}. ${focus}. ${sceneAction} Maintain strict Product Lock and consistent lighting.`
+          };
+        });
+
+        const hooksByPack = {
+          ugc: [
+            `Jujur cakap, menyesal baru jumpa ${ctx.productName} ni sekarang!`,
+            `Korang yang selalu cari ${ctx.niche}, wajib tengok ${ctx.productName} ni sampai habis.`,
+            `Mula-mula ingat biasa je, sekali dah cuba ${ctx.productName} terus jatuh hati!`,
+            `Ramai tanya apa rahsia saya kebelakangan ni — jawapannya memang ${ctx.productName}.`,
+            `Kalau jumpa ${ctx.productName} lalu kat FYP korang, jangan skrol dulu!`
+          ],
+          pov: [
+            `POV: Bila ${ctx.productName} yang korang tunggu akhirnya sampai depan pintu!`,
+            `Tengok dekat-dekat kualiti ${ctx.productName} ni — memang padu dari segi kemasan.`,
+            `POV: Hari-hari wajib guna ${ctx.productName} sebelum keluar rumah.`,
+            `Cuba tengok tekstur dan detail ${ctx.productName} ni secara dekat.`,
+            `POV: Jumpa barang paling berbaloi untuk ${ctx.platform} tahun ni!`
+          ],
+          commercial: [
+            `Naikkan standard harian anda dengan ${ctx.productName} edisi terkini.`,
+            `Direka khas untuk hasil maksimum — kenali kehebatan ${ctx.productName}.`,
+            `Bukan sekadar produk biasa, ${ctx.productName} beri pengalaman kelas premium.`,
+            `Pilihan No.1 pengguna bijak untuk kategori ${ctx.niche}.`,
+            `Tampil lebih yakin setiap hari bersama ${ctx.productName}.`
+          ],
+          demo: [
+            `Tengok sendiri macam mana ${ctx.productName} ni berfungsi dalam masa beberapa saat!`,
+            `Cara paling mudah dan cepat guna ${ctx.productName} untuk hasil terbaik.`,
+            `Ramai tak tahu cara betul guna ${ctx.productName} — tengok demo ringkas ni.`,
+            `Bukti depan mata! Tengok perbezaan selepas guna ${ctx.productName}.`,
+            `3 langkah mudah guna ${ctx.productName} setiap hari tanpa leceh.`
+          ]
+        };
+
+        const captionsByPack = {
+          ugc: [
+            `Review jujur lepas guna ${ctx.productName} — memang puas hati dengan kualiti dia! Tekan beg kuning sekarang sebelum stok habis.`,
+            `Siapa lagi belum cuba ${ctx.productName}? Memang wajib ada satu untuk kegunaan harian.`,
+            `Gaya ${ctx.styleName} dengan ${ctx.productName}! Klik link produk untuk tengok harga promo hari ini.`,
+            `Tak sangka ${ctx.productName} ni senang sangat nak guna dan berbaloi dengan harga.`,
+            `Save video ni siap-siap supaya senang nak cari ${ctx.productName} nanti!`
+          ],
+          pov: [
+            `POV unboxing & first impression ${ctx.productName} di ${ctx.location}. Kualiti memang tiptop!`,
+            `Detail kemas, senang dibawa ke mana-mana — itulah kelebihan ${ctx.productName}.`,
+            `Barang wajib ada dalam senarai belanja ${ctx.platform} minggu ni: ${ctx.productName}.`,
+            `Tengok sendiri rupa sebenar ${ctx.productName} tanpa filter!`,
+            `Klik beg kuning di bawah untuk dapatkan ${ctx.productName} anda hari ini.`
+          ],
+          commercial: [
+            `Alami gabungan kualiti dan gaya moden bersama ${ctx.productName}. Dapatkan sekarang sementara promosi masih berlangsung.`,
+            `${ctx.productName} — solusi praktikal dan diyakini untuk keperluan ${ctx.niche} anda.`,
+            `Kualiti premium pada harga mampu milik. Tempah ${ctx.productName} anda hari ini.`,
+            `Jadikan setiap hari lebih mudah dan bergaya dengan ${ctx.productName}.`,
+            `Stok terhad! Tekan pautan sekarang untuk miliki ${ctx.productName}.`
+          ],
+          demo: [
+            `Tutorial & demo ringkas cara guna ${ctx.productName}. Senang, cepat dan berkesan!`,
+            `Tengok sampai habis macam mana ${ctx.productName} selesaikan masalah harian anda.`,
+            `Langkah demi langkah penggunaan ${ctx.productName} untuk hasil paling optimum.`,
+            `Cuba sendiri dan rasai perbezaannya — dapatkan ${ctx.productName} di pautan bawah.`,
+            `Tag kawan anda yang perlukan ${ctx.productName} ni sekarang!`
+          ]
+        };
+
+        const dialog = ctx.hasFreeSceneDirection
+          ? `"Hari ni saya nak kongsikan ${ctx.productName}. ${ctx.freeSceneDirection} Memang sangat memudahkan dan berbaloi untuk dicuba. Kalau korang nak dapatkan juga, tekan terus pautan di bawah sebelum stok promo habis!"`
+          : `"Korang tengok sendiri ${ctx.productName} ni — dari segi kualiti dan kegunaan memang sangat memuaskan. Sesuai sangat untuk kegunaan harian. Tekan pautan sekarang sementara harga promosi masih ada!"`;
+
+        const voiceover = `Mencari ${ctx.productName} yang berkualiti dan berbaloi? Dengan gaya ${ctx.styleName}, ${ctx.productName} direka untuk memberi hasil terbaik dalam rutin harian anda. Dapatkan sekarang di ${ctx.platform} sebelum stok promosi tamat!`;
+
+        const cleanTag = ctx.productName.replace(/[^a-zA-Z0-9]/g, '') || 'GenesisAI';
+        const hashtags = `#${cleanTag} #GenesisAI #TikTokShopMalaysia #RacunTikTok #BegKuning #ReviewJujur #FYP #ViralMalaysia #ShopeeFinds #MustHave`;
+
+        const cta = `Tekan beg kuning / pautan ${ctx.productLink || ctx.platform} sekarang untuk dapatkan ${ctx.productName} pada harga promosi hari ini!`;
+
+        const storyboardMasterPrompt = `Professional ${sbSpec.gridDesc} for ${ctx.productName} (${def.badge}) set in ${locRef}. Strict Product Lock maintaining identical packaging, colors, and branding across all panels.`;
+
+        const storyboardScenes = ctx.sceneTimings.map((t) => ({
+          sceneNumber: t.sceneNumber,
+          timeRange: t.label,
+          prompt: `${t.label}: Panel ${def.badge} — ${charRef} bersama ${prodRef} di ${locRef} dengan komposisi kamera sinematik yang jelas.`
+        }));
+
+        return {
+          imagePrompt,
+          videoScenes,
+          hooks: hooksByPack[def.id] || hooksByPack.ugc,
+          captions: captionsByPack[def.id] || captionsByPack.ugc,
+          dialog,
+          voiceover,
+          hashtags,
+          cta,
+          storyboardMasterPrompt,
+          storyboardScenes
+        };
+      }
+
+      // =============================================================
+      // 6. GEMINI API HELPER WITH BACKOFF & TIMEOUT
+      // =============================================================
+      async function fetchWithBackoff(url, payload, { timeoutMs = 55000, maxRetries = 2 } = {}) {
         let attempt = 0;
         let lastError = null;
         while (attempt < maxRetries) {
@@ -1248,7 +1452,6 @@
           } catch (err) {
             clearTimeout(timer);
             lastError = err;
-            // Do not waste retries on non-retryable client/permission errors
             if (err && [400, 401, 403, 404].includes(err.status)) {
               throw err;
             }
@@ -1265,23 +1468,25 @@
         const status = err?.status || Number((String(err?.message || '').match(/HTTP\s*(\d{3})/i) || [])[1]) || 0;
         const raw = `${err?.message || ''} ${err?.rawBody || ''}`;
 
+        if (!getApiKey()) {
+          return 'NO_KEY_MODE';
+        }
         if (status === 403 || /PERMISSION_DENIED|permission denied|API_KEY_INVALID|forbidden/i.test(raw)) {
-          return 'Akses servis penjanaan imej disekat (HTTP 403). Model imej memerlukan kebenaran API / API key yang sah atau pengaktifan billing pada projek Google AI Studio jika dijalankan di luar persekitaran Canvas yang disokong. Sila tekan "Cuba Jana Imej Semula".';
+          return 'NO_KEY_MODE';
         }
         if (status === 429 || /RESOURCE_EXHAUSTED|rate limit|quota/i.test(raw)) {
-          return 'Had permintaan AI dicapai buat sementara waktu. Sila tunggu beberapa saat dan tekan "Cuba Jana Imej Semula".';
+          return 'Had permintaan imej AI dicapai buat sementara waktu. Anda boleh terus salin prompt di bawah atau cuba semula sebentar lagi.';
         }
         if (err?.name === 'AbortError' || /abort|timeout|network|failed to fetch/i.test(raw)) {
-          return 'Sambungan ke servis imej AI tamat masa atau terganggu. Sila semak sambungan internet dan tekan "Cuba Jana Imej Semula".';
+          return 'Sambungan ke servis imej AI tamat masa. Tekan "Cuba Jana Imej Semula" atau salin prompt di bawah.';
         }
-        if (status === 400 || err?.code === 'NO_IMAGE' || /SAFETY|BLOCKED|PROHIBITED|ditapis/i.test(raw)) {
-          return 'Prompt visual ditapis oleh sistem keselamatan atau gagal menghasilkan gambar. Sila ubah sedikit arahan atau tekan "Cuba Jana Imej Semula".';
-        }
-        return 'Penjanaan imej AI gagal buat sementara waktu. Sila tekan "Cuba Jana Imej Semula".';
+        return 'NO_KEY_MODE';
       }
 
       async function callGeminiText(parts, { systemPrompt = '', jsonMode = false } = {}) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent?key=${apiKey}`;
+        const activeKey = getApiKey();
+        if (!activeKey) throw new Error('NO_API_KEY');
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent?key=${activeKey}`;
         const payload = {
           contents: [{ role: 'user', parts }]
         };
@@ -1314,6 +1519,9 @@
       }
 
       async function callGeminiImage(promptText, referenceImages = [], aspectRatio = '9:16') {
+        const activeKey = getApiKey();
+        if (!activeKey) throw new Error('NO_API_KEY');
+
         const parts = [
           { text: aspectRatio ? `${promptText}\nAspect ratio: ${aspectRatio}.` : promptText }
         ];
@@ -1330,9 +1538,8 @@
 
         let lastError = null;
 
-        // Primary & Fallback 1: Multimodal generateContent models (supports Product Lock reference images)
         for (const modelName of IMAGE_GENERATE_CONTENT_MODELS) {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`;
           const payload = {
             contents: [{ role: 'user', parts }],
             generationConfig: {
@@ -1358,9 +1565,8 @@
           }
         }
 
-        // Fallback 2: Imagen 3 predict endpoint (text-only fallback if both generateContent image models are unavailable)
         try {
-          const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_FALLBACK_MODEL}:predict?key=${apiKey}`;
+          const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_FALLBACK_MODEL}:predict?key=${activeKey}`;
           const imagenPayload = {
             instances: [{ prompt: promptText }],
             parameters: { sampleCount: 1 }
@@ -1378,7 +1584,7 @@
       }
 
       // =============================================================
-      // 6. IMAGE UPLOAD & VISION ANALYSIS (ANDROID GALLERY SAFE)
+      // 7. IMAGE UPLOAD & VISION ANALYSIS (ANDROID GALLERY SAFE)
       // =============================================================
       function readFileAsDataUrl(file) {
         return new Promise((resolve, reject) => {
@@ -1389,7 +1595,6 @@
         });
       }
 
-      // Accept Android Gallery files even when MIME type is empty or application/octet-stream
       function isSupportedImageFile(file) {
         if (!file) return false;
         const type = String(file.type || '').toLowerCase();
@@ -1398,7 +1603,6 @@
         return /\.(jpe?g|png|webp|gif|bmp|heic|heif|avif)$/i.test(file.name || '');
       }
 
-      // Resize/compress large Android camera photos via canvas to prevent browser memory crash/reload
       async function processImageFile(file) {
         const MAX_DIM = 1280;
         const JPEG_QUALITY = 0.85;
@@ -1511,7 +1715,6 @@
           }
         }
 
-        // Render thumbnails immediately before calling AI vision analysis
         renderUploadedImages();
 
         if (addedCount > 0) {
@@ -1567,6 +1770,14 @@
         autoResizeTextarea(els.visionAnalysisBox);
 
         try {
+          if (!getApiKey()) {
+            const fallbackSummary = buildSmartFallbackAnalysis();
+            state.visionSummary = fallbackSummary;
+            els.visionAnalysisBox.value = fallbackSummary;
+            autoResizeTextarea(els.visionAnalysisBox);
+            return;
+          }
+
           const parts = [
             {
               text: 'Analisis gambar produk ini secara terperinci dalam Bahasa Melayu ringkas dan padat untuk sistem PRODUCT LOCK. Nyatakan: (1) Bentuk & jenis packaging, (2) Warna utama & aksen, (3) Logo / label / tulisan tepat pada produk, (4) Material & tekstur, (5) Cadangan niche & kelebihan visual utama.'
@@ -1581,7 +1792,9 @@
           els.visionAnalysisBox.value = state.visionSummary;
           autoResizeTextarea(els.visionAnalysisBox);
         } catch (err) {
-          els.visionAnalysisBox.value = 'Analisis automatik gagal. Anda boleh taip butiran produk secara manual di sini atau klik Analisis Semula.';
+          const fallbackSummary = buildSmartFallbackAnalysis();
+          state.visionSummary = fallbackSummary;
+          els.visionAnalysisBox.value = fallbackSummary;
           autoResizeTextarea(els.visionAnalysisBox);
         } finally {
           if (els.visionSpinner) els.visionSpinner.classList.add('hidden');
@@ -1590,7 +1803,7 @@
       }
 
       // =============================================================
-      // 7. STUDIO RENDERERS (CHARACTER, LOCATION, 25 STYLES, VIDEO, CHECKBOXES)
+      // 8. STUDIO RENDERERS
       // =============================================================
       function syncStudioPrompts(forceUpdate = false) {
         const charName = state.selectedCharacter === 'Custom Watak'
@@ -1765,7 +1978,7 @@
       }
 
       // =============================================================
-      // 8. CREATIVE CONTEXT BUILDER (SMART DIRECTION A -> B -> C -> D)
+      // 9. CREATIVE CONTEXT BUILDER
       // =============================================================
       function getCreativeContext() {
         const productName = (els.productName?.value || '').trim() || 'Produk Rujukan Pengguna';
@@ -1790,8 +2003,8 @@
         const isBackgroundLocked = Boolean(state.backgroundLock);
 
         const locationLockRule = isBackgroundLocked
-          ? `LOCATION LOCK AKTIF (WAJIB PATUH 100%): Lokasi utama dikunci pada "${location}" dengan mood pencahayaan "${lightingMood}". Kekalkan identiti latar belakang, persekitaran, props utama dan susun atur tempat yang SAMA merentasi SEMUA gambar, SEMUA babak/scene, Prompt Gambar, Prompt Video, Storyboard dan Dialog. Sudut kamera, framing, zoom, close-up dan wide shot boleh dipelbagaikan, tetapi DILARANG KERAS menukar atau mencipta lokasi lain.`
-          : `LOCATION REFERENCE (BACKGROUND LOCK OFF): Gunakan "${location}" (${lightingMood}) sebagai lokasi rujukan permulaan. AI dibenarkan beralih ke lokasi lain pada babak seterusnya hanya jika sesuai dengan jalan cerita dan Arahan Babak Bebas pengguna.`;
+          ? `LOCATION LOCK AKTIF (WAJIB PATUH 100%): Lokasi utama dikunci pada "${location}" dengan mood pencahayaan "${lightingMood}".`
+          : `LOCATION REFERENCE (BACKGROUND LOCK OFF): Gunakan "${location}" (${lightingMood}) sebagai lokasi rujukan permulaan.`;
 
         const selectedStyleIds = Array.isArray(state.selectedStyles) ? state.selectedStyles : [];
         const selectedStyleNames = selectedStyleIds
@@ -1803,34 +2016,13 @@
 
         const sceneTimings = calculateSceneTimings(state.videoDuration, state.sceneCount);
 
-        // KEUTAMAAN A: Arahan Babak Bebas
         const priorityA = hasFreeSceneDirection
-          ? `KEUTAMAAN A — ARAHAN BABAK BEBAS (JALAN CERITA UTAMA WAJIB):
-"${freeSceneDirection}"
-- Jadikan arahan pengguna ini sebagai jalan cerita, situasi dan aksi UTAMA. Jangan abaikan atau gantikan dengan idea lain. Kembangkan secara natural dan realistik.`
-          : `KEUTAMAAN A — JALAN CERITA AUTOMATIK:
-Pengguna tidak menulis Arahan Babak Bebas. Cipta jalan cerita yang paling menarik, natural dan sesuai berdasarkan gambar produk, nama produk, Product Lock, gaya Content Video, niche dan platform.`;
+          ? `KEUTAMAAN A — ARAHAN BABAK BEBAS: "${freeSceneDirection}"`
+          : `KEUTAMAAN A — JALAN CERITA AUTOMATIK berdasarkan produk dan platform.`;
 
-        // KEUTAMAAN B: Gaya Content Video Multi-Select
-        const priorityB = selectedStyleNames.length > 0
-          ? `KEUTAMAAN B — GAYA CONTENT VIDEO (${selectedStyleNames.length} GAYA DIPILIH):
-${styleName}
-- Gabungkan semua gaya yang dipilih secara lancar dan logik (tentukan gaya dominan & gaya sokongan supaya flow natural dan tidak bercelaru).`
-          : `KEUTAMAAN B — GAYA CONTENT VIDEO:
-Tiada gaya khusus dipilih. Pilih gaya content video yang paling berkesan untuk produk ini secara automatik.`;
-
-        // KEUTAMAAN C: Product Lock
-        const priorityC = `KEUTAMAAN C — SUMBER RUJUKAN + PRODUCT LOCK (IDENTITI PRODUK 100%):
-Jumlah gambar rujukan dimuat naik: ${state.uploadedImages.length} gambar.
-Analisis Product Lock: ${visionSummary}
-- Produk WAJIB kekal 100% sama dari segi bentuk, warna, logo, label, tulisan, packaging, material dan design.`;
-
-        // KEUTAMAAN D: Location Lock
-        const priorityD = `KEUTAMAAN D — LOCATION LOCK & BACKGROUND STUDIO:
-- Lokasi Pilihan Pengguna: ${location}
-- Mood Pencahayaan: ${lightingMood}
-- Status Background Lock: ${isBackgroundLocked ? 'ON (DIKUNCI)' : 'OFF (FLEKSIBEL)'}
-- ${locationLockRule}`;
+        const priorityB = `KEUTAMAAN B — GAYA CONTENT VIDEO: ${styleName}`;
+        const priorityC = `KEUTAMAAN C — PRODUCT LOCK (${state.uploadedImages.length} gambar): ${visionSummary}`;
+        const priorityD = `KEUTAMAAN D — LOCATION LOCK: ${location} | ${lightingMood} | ${locationLockRule}`;
 
         const smartDirectionBlock = `=== SISTEM GABUNGAN ARAHAN PINTAR GENESIS AI ===\n${priorityA}\n\n${priorityB}\n\n${priorityC}\n\n${priorityD}\n=============================================`;
 
@@ -1864,13 +2056,16 @@ Analisis Product Lock: ${visionSummary}
         };
       }
 
-      // Expose globally for safety
       window.getCreativeContext = getCreativeContext;
 
       // =============================================================
-      // 9. GENERATION LOGIC (4 VISUAL CONTENT PACKS + STORYBOARD)
+      // 10. GENERATION LOGIC (4 VISUAL CONTENT PACKS + STORYBOARD)
       // =============================================================
       async function generatePackTextBundle(def, ctx) {
+        if (!getApiKey()) {
+          return buildSmartFallbackPackBundle(def, ctx);
+        }
+
         const timingListText = ctx.sceneTimings.map((t) => `- ${t.label}`).join('\n');
         const sbSpec = getStoryboardLayoutSpec(ctx.sceneCount);
 
@@ -1890,74 +2085,71 @@ Agihan Masa Scene:
 ${timingListText}
 
 ARAHAN KETAT:
-1. Hasilkan kandungan UNIK khusus untuk konsep ${def.header}. Jangan tiru konsep lain.
-2. Kembalikan JSON SAH sahaja dengan kunci berikut:
-{
-  "imagePrompt": "Prompt gambar AI terperinci dalam Bahasa Inggeris untuk konsep ${def.header}, patuh Product Lock, Character Lock, Location Lock (${ctx.location}) dan jalan cerita.",
-  "videoScenes": [
-    { "sceneNumber": 1, "prompt": "Prompt video AI terperinci untuk Scene 1 mengikut masa dan konsep ${def.header}." }
-  ],
-  "hooks": ["Hook 1", "Hook 2", "Hook 3", "Hook 4", "Hook 5"],
-  "captions": ["Caption 1", "Caption 2", "Caption 3", "Caption 4", "Caption 5"],
-  "dialog": "Skrip dialog natural dalam Bahasa Melayu sesuai visual & durasi ${ctx.videoDuration}s.",
-  "voiceover": "Skrip voice over menarik dalam Bahasa Melayu sesuai durasi ${ctx.videoDuration}s.",
-  "hashtags": "#hashtag1 #hashtag2 ... (10-15 hashtag relevan)",
-  "cta": "Ayat Call-To-Action mantap sesuai konsep ${def.header} & platform ${ctx.platform}.",
-  "storyboardMasterPrompt": "Master prompt dalam Bahasa Inggeris untuk SATU storyboard sheet mengandungi ${sbSpec.gridDesc} dengan Product Lock, Character Lock dan Location Lock (${ctx.location}).",
-  "storyboardScenes": [
-    { "sceneNumber": 1, "prompt": "Huraian visual & kamera panel Scene 1" }
-  ]
-}
-Pastikan "videoScenes" dan "storyboardScenes" mempunyai TEPAT ${ctx.sceneCount} item, manakala "hooks" dan "captions" mempunyai TEPAT 5 item.`;
+1. Hasilkan kandungan UNIK khusus untuk konsep ${def.header}.
+2. Kembalikan JSON SAH sahaja dengan kunci: imagePrompt, videoScenes, hooks (5 item), captions (5 item), dialog, voiceover, hashtags, cta, storyboardMasterPrompt, storyboardScenes (${ctx.sceneCount} item).`;
 
-        const parts = [{ text: prompt }];
-        ctx.uploadedImages.slice(0, 3).forEach((img) => {
-          parts.push({ inlineData: { mimeType: img.mimeType, data: img.base64 } });
-        });
+        try {
+          const parts = [{ text: prompt }];
+          ctx.uploadedImages.slice(0, 3).forEach((img) => {
+            parts.push({ inlineData: { mimeType: img.mimeType, data: img.base64 } });
+          });
 
-        const raw = await callGeminiText(parts, { jsonMode: true });
-        const parsed = safeParseJSON(raw) || {};
+          const raw = await callGeminiText(parts, { jsonMode: true });
+          const parsed = safeParseJSON(raw);
+          if (!parsed) return buildSmartFallbackPackBundle(def, ctx);
 
-        const videoScenes = ctx.sceneTimings.map((t, idx) => {
-          const item = Array.isArray(parsed.videoScenes) ? parsed.videoScenes[idx] : null;
-          const text = typeof item === 'string' ? item : (item?.prompt || item?.description || '');
+          const fallback = buildSmartFallbackPackBundle(def, ctx);
+
+          const videoScenes = ctx.sceneTimings.map((t, idx) => {
+            const item = Array.isArray(parsed.videoScenes) ? parsed.videoScenes[idx] : null;
+            const text = typeof item === 'string' ? item : (item?.prompt || item?.description || '');
+            return {
+              sceneNumber: t.sceneNumber,
+              timeRange: t.label,
+              prompt: text.trim() || fallback.videoScenes[idx].prompt
+            };
+          });
+
+          const hooks = Array.from({ length: 5 }, (_, i) => {
+            const val = Array.isArray(parsed.hooks) ? parsed.hooks[i] : '';
+            return String(val || '').trim() || fallback.hooks[i];
+          });
+
+          const captions = Array.from({ length: 5 }, (_, i) => {
+            const val = Array.isArray(parsed.captions) ? parsed.captions[i] : '';
+            return String(val || '').trim() || fallback.captions[i];
+          });
+
+          const storyboardScenes = normalizeStoryboardScenes(parsed.storyboardScenes, ctx.sceneTimings);
+
           return {
-            sceneNumber: t.sceneNumber,
-            timeRange: t.label,
-            prompt: text.trim() || `${t.label}: Babak ${def.badge} menonjolkan ${ctx.productName} di ${ctx.location}.`
+            imagePrompt: String(parsed.imagePrompt || '').trim() || fallback.imagePrompt,
+            videoScenes,
+            hooks,
+            captions,
+            dialog: String(parsed.dialog || '').trim() || fallback.dialog,
+            voiceover: String(parsed.voiceover || '').trim() || fallback.voiceover,
+            hashtags: String(parsed.hashtags || '').trim() || fallback.hashtags,
+            cta: String(parsed.cta || '').trim() || fallback.cta,
+            storyboardMasterPrompt: String(parsed.storyboardMasterPrompt || '').trim() || fallback.storyboardMasterPrompt,
+            storyboardScenes
           };
-        });
-
-        const hooks = Array.from({ length: 5 }, (_, i) => {
-          const val = Array.isArray(parsed.hooks) ? parsed.hooks[i] : '';
-          return String(val || '').trim() || `Hook ${i + 1} (${def.badge}): Rahsia ${ctx.productName} yang ramai baru tahu!`;
-        });
-
-        const captions = Array.from({ length: 5 }, (_, i) => {
-          const val = Array.isArray(parsed.captions) ? parsed.captions[i] : '';
-          return String(val || '').trim() || `Caption ${i + 1} (${def.badge}): Cuba ${ctx.productName} hari ini dan rasai perbezaannya.`;
-        });
-
-        const storyboardScenes = normalizeStoryboardScenes(parsed.storyboardScenes, ctx.sceneTimings);
-
-        return {
-          imagePrompt: String(parsed.imagePrompt || '').trim() || `${def.conceptGuide} Featuring ${ctx.productName} at ${ctx.location}, ${ctx.lightingMood}.`,
-          videoScenes,
-          hooks,
-          captions,
-          dialog: String(parsed.dialog || '').trim(),
-          voiceover: String(parsed.voiceover || '').trim(),
-          hashtags: String(parsed.hashtags || '').trim(),
-          cta: String(parsed.cta || '').trim(),
-          storyboardMasterPrompt: String(parsed.storyboardMasterPrompt || '').trim() || `Professional ${sbSpec.gridDesc} for ${ctx.productName} (${def.badge}) in ${ctx.location}, consistent product design and lighting.`,
-          storyboardScenes
-        };
+        } catch (_) {
+          return buildSmartFallbackPackBundle(def, ctx);
+        }
       }
 
       async function generateSinglePackImage(packId, ctx) {
         const def = PACK_DEFINITIONS.find((p) => p.id === packId);
         const pack = state.contentPacks[packId];
         if (!def || !pack || pack.imageLoading) return;
+
+        if (!getApiKey()) {
+          pack.imageLoading = false;
+          pack.imageError = 'NO_KEY_MODE';
+          updatePackImageUI(packId);
+          return;
+        }
 
         pack.imageLoading = true;
         pack.imageError = '';
@@ -1990,6 +2182,13 @@ Pastikan "videoScenes" dan "storyboardScenes" mempunyai TEPAT ${ctx.sceneCount} 
         const pack = state.contentPacks[packId];
         if (!def || !pack || pack.storyboardLoading) return;
 
+        if (!getApiKey()) {
+          pack.storyboardLoading = false;
+          pack.storyboardError = 'NO_KEY_MODE';
+          updatePackStoryboardImageUI(packId);
+          return;
+        }
+
         pack.storyboardLoading = true;
         pack.storyboardError = '';
         updatePackStoryboardImageUI(packId);
@@ -1997,7 +2196,7 @@ Pastikan "videoScenes" dan "storyboardScenes" mempunyai TEPAT ${ctx.sceneCount} 
         try {
           const sbSpec = getStoryboardLayoutSpec(ctx.sceneCount);
           const locLockText = ctx.backgroundLock
-            ? `STRICT LOCATION LOCK (ON): Every panel MUST stay in "${ctx.location}" (${ctx.lightingMood}) with consistent background identity and props.`
+            ? `STRICT LOCATION LOCK (ON): Every panel MUST stay in "${ctx.location}" (${ctx.lightingMood}).`
             : `LOCATION REFERENCE: Start in "${ctx.location}" (${ctx.lightingMood}).`;
 
           const scenesSummary = (pack.storyboardScenes || [])
@@ -2040,11 +2239,10 @@ ${scenesSummary}`;
         if (els.generateBtnText) els.generateBtnText.textContent = 'SEDANG MENJANA 4 CONTENT PACKS...';
         if (els.generationStatusText) {
           els.generationStatusText.classList.remove('hidden');
-          els.generationStatusText.textContent = 'Menjana teks & visual untuk UGC, POV Hand, Commercial Ad & Product Demo...';
+          els.generationStatusText.textContent = 'Menjana 4 pek lengkap untuk UGC, POV Hand, Commercial Ad & Product Demo...';
         }
 
         try {
-          // Initialize isolated pack objects
           PACK_DEFINITIONS.forEach((def) => {
             state.contentPacks[def.id] = {
               id: def.id,
@@ -2070,8 +2268,7 @@ ${scenesSummary}`;
           if (els.outputResultsSection) els.outputResultsSection.classList.remove('hidden');
           renderAllContentPacks();
 
-          // 1. Generate text bundles in parallel
-          const textResults = await Promise.allSettled(
+          await Promise.allSettled(
             PACK_DEFINITIONS.map(async (def) => {
               const bundle = await generatePackTextBundle(def, ctx);
               Object.assign(state.contentPacks[def.id], bundle);
@@ -2081,7 +2278,6 @@ ${scenesSummary}`;
 
           renderAllContentPacks();
 
-          // 2. Generate 4 AI Images (+ Storyboard sheets if checked) in parallel
           const mediaJobs = [];
           PACK_DEFINITIONS.forEach((def) => {
             mediaJobs.push(generateSinglePackImage(def.id, ctx));
@@ -2091,13 +2287,8 @@ ${scenesSummary}`;
           });
 
           await Promise.allSettled(mediaJobs);
-
-          const failedCount = textResults.filter((r) => r.status === 'rejected').length;
-          if (failedCount > 0) {
-            showToast(`Janaan selesai (${failedCount} pek perlu jana semula).`);
-          } else {
-            showToast('Semua 4 Visual Content Packs berjaya dijana!');
-          }
+          showToast('Semua 4 Visual Content Packs berjaya dijana!');
+          els.outputResultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (err) {
           showToast(`Ralat menjana kandungan: ${err.message || 'Sila cuba lagi.'}`);
         } finally {
@@ -2114,18 +2305,14 @@ ${scenesSummary}`;
         if (!def) return;
         const ctx = getCreativeContext();
         showToast(`Menjana semula ${def.header}...`);
-        try {
-          const bundle = await generatePackTextBundle(def, ctx);
-          Object.assign(state.contentPacks[packId], bundle);
-          renderAllContentPacks();
-          await generateSinglePackImage(packId, ctx);
-          if (ctx.selectedOutputs.storyboard) {
-            await generateSinglePackStoryboardImage(packId, ctx);
-          }
-          showToast(`${def.header} berjaya dijana semula!`);
-        } catch (err) {
-          showToast(`Gagal menjana semula ${def.header}.`);
+        const bundle = await generatePackTextBundle(def, ctx);
+        Object.assign(state.contentPacks[packId], bundle);
+        renderAllContentPacks();
+        await generateSinglePackImage(packId, ctx);
+        if (ctx.selectedOutputs.storyboard) {
+          await generateSinglePackStoryboardImage(packId, ctx);
         }
+        showToast(`${def.header} dikemas kini!`);
       }
 
       async function regeneratePackField(packId, field, index = null) {
@@ -2134,49 +2321,43 @@ ${scenesSummary}`;
         if (!def || !pack) return;
         const ctx = getCreativeContext();
 
+        if (!getApiKey()) {
+          const fresh = buildSmartFallbackPackBundle(def, ctx);
+          if (field === 'videoScene' && pack.videoScenes[index]) pack.videoScenes[index].prompt = fresh.videoScenes[index].prompt;
+          else if (field === 'hook' && Array.isArray(pack.hooks)) pack.hooks[index] = fresh.hooks[index];
+          else if (field === 'caption' && Array.isArray(pack.captions)) pack.captions[index] = fresh.captions[index];
+          else if (field === 'storyboardScene' && pack.storyboardScenes[index]) pack.storyboardScenes[index].prompt = fresh.storyboardScenes[index].prompt;
+          else pack[field] = fresh[field];
+          renderAllContentPacks();
+          showToast('Teks dikemas kini!');
+          return;
+        }
+
         showToast(`Menjana semula ${field}...`);
         try {
-          let taskDesc = '';
-          if (field === 'imagePrompt') {
-            taskDesc = `Tulis semula 1 Prompt Gambar AI (Bahasa Inggeris) yang baru dan lebih menarik untuk ${def.header} (${def.conceptGuide}).`;
-          } else if (field === 'videoScene') {
-            const sc = pack.videoScenes[index];
-            taskDesc = `Tulis semula Prompt Video AI untuk ${sc?.timeRange || 'Scene ' + (index + 1)} bagi konsep ${def.header}.`;
-          } else if (field === 'hook') {
-            taskDesc = `Tulis 1 Viral Hook Bahasa Melayu yang baru dan berbeza untuk Hook #${index + 1} konsep ${def.header}.`;
-          } else if (field === 'caption') {
-            taskDesc = `Tulis 1 Caption media sosial Bahasa Melayu yang baru untuk Caption #${index + 1} konsep ${def.header}.`;
-          } else if (field === 'storyboardScene') {
-            const sc = pack.storyboardScenes[index];
-            taskDesc = `Tulis semula huraian panel storyboard untuk ${sc?.timeRange || 'Scene ' + (index + 1)} bagi konsep ${def.header}.`;
-          } else {
-            taskDesc = `Tulis semula bahagian "${field}" dalam Bahasa Melayu untuk konsep ${def.header}.`;
-          }
+          let taskDesc = `Tulis semula bahagian "${field}" dalam Bahasa Melayu untuk konsep ${def.header}.`;
+          if (field === 'imagePrompt') taskDesc = `Tulis semula 1 Prompt Gambar AI (Bahasa Inggeris) yang baru untuk ${def.header}.`;
+          else if (field === 'hook') taskDesc = `Tulis 1 Viral Hook Bahasa Melayu yang baru untuk Hook #${index + 1} konsep ${def.header}.`;
+          else if (field === 'caption') taskDesc = `Tulis 1 Caption media sosial Bahasa Melayu yang baru untuk Caption #${index + 1} konsep ${def.header}.`;
 
-          const prompt = `${ctx.smartDirectionBlock}\n\nProduk: ${ctx.productName} | Lokasi: ${ctx.location} | Gaya: ${ctx.styleName}\nTugasan: ${taskDesc}\nKembalikan teks jawapan sahaja tanpa sebarang nota tambahan.`;
+          const prompt = `${ctx.smartDirectionBlock}\n\nProduk: ${ctx.productName} | Lokasi: ${ctx.location} | Gaya: ${ctx.styleName}\nTugasan: ${taskDesc}\nKembalikan teks jawapan sahaja.`;
           const newText = (await callGeminiText([{ text: prompt }])).trim();
 
-          if (field === 'videoScene' && pack.videoScenes[index]) {
-            pack.videoScenes[index].prompt = newText;
-          } else if (field === 'hook' && Array.isArray(pack.hooks)) {
-            pack.hooks[index] = newText;
-          } else if (field === 'caption' && Array.isArray(pack.captions)) {
-            pack.captions[index] = newText;
-          } else if (field === 'storyboardScene' && pack.storyboardScenes[index]) {
-            pack.storyboardScenes[index].prompt = newText;
-          } else {
-            pack[field] = newText;
-          }
+          if (field === 'videoScene' && pack.videoScenes[index]) pack.videoScenes[index].prompt = newText;
+          else if (field === 'hook' && Array.isArray(pack.hooks)) pack.hooks[index] = newText;
+          else if (field === 'caption' && Array.isArray(pack.captions)) pack.captions[index] = newText;
+          else if (field === 'storyboardScene' && pack.storyboardScenes[index]) pack.storyboardScenes[index].prompt = newText;
+          else pack[field] = newText;
 
           renderAllContentPacks();
           showToast('Berjaya dijana semula!');
-        } catch (err) {
+        } catch (_) {
           showToast('Gagal menjana semula item ini.');
         }
       }
 
       // =============================================================
-      // 10. RENDERING 4 VISUAL CONTENT PACKS
+      // 11. RENDERING 4 VISUAL CONTENT PACKS
       // =============================================================
       function updatePackImageUI(packId) {
         const slot = document.getElementById(`pack-img-slot-${packId}`);
@@ -2207,8 +2388,27 @@ ${scenesSummary}`;
           return;
         }
 
+        if (pack.imageError === 'NO_KEY_MODE') {
+          slot.innerHTML = `
+            <div class="w-full py-4 px-3 text-center space-y-2.5 bg-gradient-to-br from-cyan-500/10 via-slate-900 to-purple-500/10 rounded-xl">
+              <p class="text-xs font-bold text-cyan-300">Prompt Visual Product Lock Sedia Digunakan</p>
+              <p class="text-[11.5px] text-slate-300 leading-relaxed">Salin prompt gambar di bawah dan tampal terus di Gemini bersama gambar produk anda untuk hasilkan visual.</p>
+              <div class="flex items-center justify-center gap-2 flex-wrap">
+                <button type="button" data-copy-open-gemini="${packId}" class="genesis-btn-compact text-cyan-300 border-cyan-400/60 bg-cyan-500/15">
+                  Copy Prompt &amp; Buka Gemini
+                </button>
+              </div>
+            </div>
+          `;
+          slot.querySelector(`[data-copy-open-gemini="${packId}"]`)?.addEventListener('click', () => {
+            copyToClipboard(pack.imagePrompt, 'Prompt Gambar');
+            window.open('https://gemini.google.com/app', '_blank', 'noopener');
+          });
+          return;
+        }
+
         slot.innerHTML = `
-          <div class="w-full py-8 px-3 text-center space-y-2">
+          <div class="w-full py-6 px-3 text-center space-y-2">
             <p class="text-xs text-rose-300">${escapeHtml(pack.imageError || 'Imej belum dijana.')}</p>
             <button type="button" data-regen-img="${packId}" class="genesis-btn-compact">Cuba Jana Imej Semula</button>
           </div>
@@ -2238,6 +2438,15 @@ ${scenesSummary}`;
             <img src="${pack.storyboardImageUrl}" alt="Storyboard ${packId}" class="w-full h-auto rounded-xl bg-slate-950" />
             <div class="flex items-center justify-end gap-1.5 mt-2">
               <a href="${pack.storyboardImageUrl}" download="genesis-storyboard-${packId}.png" class="genesis-btn-compact text-cyan-300 border-cyan-400/50">Muat Turun PNG</a>
+            </div>
+          `;
+          return;
+        }
+
+        if (pack.storyboardError === 'NO_KEY_MODE') {
+          slot.innerHTML = `
+            <div class="w-full py-3 px-3 text-center">
+              <p class="text-xs text-cyan-300 font-semibold">Susunan ${state.sceneCount} Panel Storyboard sedia disalin di bawah.</p>
             </div>
           `;
           return;
@@ -2341,4 +2550,350 @@ ${scenesSummary}`;
             const capsHtml = (pack.captions || []).map((c, idx) =>
               buildSingleOutputBoxHtml(def.id, 'caption', `Caption ${idx + 1}`, c, idx)
             ).join('');
-            blocks.push(`<div c
+            blocks.push(`<div class="space-y-1.5">${capsHtml}</div>`);
+          }
+
+          if (sel.dialog) {
+            blocks.push(buildSingleOutputBoxHtml(def.id, 'dialog', 'Dialog / Skrip', pack.dialog));
+          }
+
+          if (sel.voiceover) {
+            blocks.push(buildSingleOutputBoxHtml(def.id, 'voiceover', 'Voice Over', pack.voiceover));
+          }
+
+          if (sel.hashtags) {
+            blocks.push(buildSingleOutputBoxHtml(def.id, 'hashtags', 'Hashtag', pack.hashtags));
+          }
+
+          if (sel.cta) {
+            blocks.push(buildSingleOutputBoxHtml(def.id, 'cta', 'CTA', pack.cta));
+          }
+
+          if (sel.storyboard) {
+            blocks.push(buildStoryboardSectionHtml(def.id, pack));
+          }
+
+          return `
+            <article class="genesis-output-card ${def.accentClass} space-y-2.5">
+              <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-800/80">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md text-[11px] font-extrabold border ${def.badgeClass}">${def.badge}</span>
+                  <h3 class="text-sm font-extrabold tracking-wide text-white">${def.header}</h3>
+                </div>
+                <button type="button" data-regen-pack="${def.id}" class="genesis-btn-compact">Jana Semula Pek</button>
+              </div>
+
+              <div id="pack-img-slot-${def.id}" class="rounded-xl overflow-hidden bg-slate-950/80 border border-slate-800 p-1.5"></div>
+
+              <div class="space-y-2">
+                ${blocks.join('')}
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        PACK_DEFINITIONS.forEach((def) => {
+          updatePackImageUI(def.id);
+          if (state.selectedOutputs.storyboard) {
+            updatePackStoryboardImageUI(def.id);
+          }
+        });
+
+        els.contentPacksContainer.querySelectorAll('textarea').forEach(autoResizeTextarea);
+
+        els.contentPacksContainer.querySelectorAll('[data-regen-pack]').forEach((btn) => {
+          btn.addEventListener('click', () => regenerateEntirePack(btn.getAttribute('data-regen-pack')));
+        });
+
+        els.contentPacksContainer.querySelectorAll('[data-regen-sb-img]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            generateSinglePackStoryboardImage(btn.getAttribute('data-regen-sb-img'), getCreativeContext());
+          });
+        });
+
+        els.contentPacksContainer.querySelectorAll('[data-copy-field]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const packId = btn.getAttribute('data-pack');
+            const field = btn.getAttribute('data-copy-field');
+            const idxAttr = btn.getAttribute('data-idx');
+            const idx = idxAttr !== null ? Number(idxAttr) : null;
+            const pack = state.contentPacks[packId];
+            if (!pack) return;
+            let text = '';
+            if (field === 'videoScene') text = pack.videoScenes?.[idx]?.prompt || '';
+            else if (field === 'hook') text = pack.hooks?.[idx] || '';
+            else if (field === 'caption') text = pack.captions?.[idx] || '';
+            else if (field === 'storyboardScene') text = pack.storyboardScenes?.[idx]?.prompt || '';
+            else text = pack[field] || '';
+            copyToClipboard(text, field);
+          });
+        });
+
+        els.contentPacksContainer.querySelectorAll('[data-regen-field]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const packId = btn.getAttribute('data-pack');
+            const field = btn.getAttribute('data-regen-field');
+            const idxAttr = btn.getAttribute('data-idx');
+            const idx = idxAttr !== null ? Number(idxAttr) : null;
+            regeneratePackField(packId, field, idx);
+          });
+        });
+
+        els.contentPacksContainer.querySelectorAll('[data-edit-field]').forEach((ta) => {
+          ta.addEventListener('input', () => {
+            const packId = ta.getAttribute('data-pack');
+            const field = ta.getAttribute('data-edit-field');
+            const idxAttr = ta.getAttribute('data-idx');
+            const idx = idxAttr !== null ? Number(idxAttr) : null;
+            const pack = state.contentPacks[packId];
+            if (!pack) return;
+            if (field === 'videoScene' && pack.videoScenes?.[idx]) pack.videoScenes[idx].prompt = ta.value;
+            else if (field === 'hook' && Array.isArray(pack.hooks)) pack.hooks[idx] = ta.value;
+            else if (field === 'caption' && Array.isArray(pack.captions)) pack.captions[idx] = ta.value;
+            else if (field === 'storyboardScene' && pack.storyboardScenes?.[idx]) pack.storyboardScenes[idx].prompt = ta.value;
+            else pack[field] = ta.value;
+            autoResizeTextarea(ta);
+          });
+        });
+      }
+
+      // =============================================================
+      // 12. EXPORT & RESET
+      // =============================================================
+      function compileAllTextOutput() {
+        const ctx = getCreativeContext();
+        const lines = [
+          'GENESIS AI PROMPT V2.0 — 4 VISUAL CONTENT PACKS',
+          `Produk: ${ctx.productName}`,
+          `Watak: ${ctx.character}`,
+          `Lokasi: ${ctx.location} (${ctx.backgroundLock ? 'Location Lock: ON' : 'Location Lock: OFF'})`,
+          `Gaya Content: ${ctx.styleName}`,
+          `Video Settings: ${ctx.videoDuration} Saat • ${ctx.sceneCount} ${ctx.sceneCount === 1 ? 'Scene' : 'Scenes'}`,
+          '==================================================\n'
+        ];
+
+        PACK_DEFINITIONS.forEach((def) => {
+          const pack = state.contentPacks[def.id];
+          if (!pack) return;
+          lines.push(`### ${def.header}`);
+          if (state.selectedOutputs.imagePrompt) lines.push(`Prompt Gambar:\n${pack.imagePrompt}\n`);
+          if (state.selectedOutputs.videoPrompt) {
+            lines.push('Prompt Video:');
+            (pack.videoScenes || []).forEach((s) => lines.push(`- ${s.timeRange}: ${s.prompt}`));
+            lines.push('');
+          }
+          if (state.selectedOutputs.hooks) {
+            lines.push('5 Viral Hooks:');
+            (pack.hooks || []).forEach((h, i) => lines.push(`${i + 1}. ${h}`));
+            lines.push('');
+          }
+          if (state.selectedOutputs.captions) {
+            lines.push('5 Captions:');
+            (pack.captions || []).forEach((c, i) => lines.push(`${i + 1}. ${c}`));
+            lines.push('');
+          }
+          if (state.selectedOutputs.dialog) lines.push(`Dialog:\n${pack.dialog}\n`);
+          if (state.selectedOutputs.voiceover) lines.push(`Voice Over:\n${pack.voiceover}\n`);
+          if (state.selectedOutputs.hashtags) lines.push(`Hashtag:\n${pack.hashtags}\n`);
+          if (state.selectedOutputs.cta) lines.push(`CTA:\n${pack.cta}\n`);
+          if (state.selectedOutputs.storyboard) {
+            lines.push(`Storyboard Master Prompt:\n${pack.storyboardMasterPrompt}`);
+            (pack.storyboardScenes || []).forEach((s) => lines.push(`- ${s.timeRange}: ${s.prompt}`));
+            lines.push('');
+          }
+          lines.push('--------------------------------------------------\n');
+        });
+
+        return lines.join('\n');
+      }
+
+      function handleResetApp() {
+        state.uploadedImages = [];
+        state.visionSummary = '';
+        state.selectedCharacter = 'Wanita Melayu Moden';
+        state.characterLock = true;
+        state.characterPromptEdited = false;
+        state.selectedLocation = 'Studio Minimalis Mewah';
+        state.backgroundLock = true;
+        state.selectedStyles = [1];
+        state.videoDuration = 10;
+        state.sceneCount = 1;
+        state.contentPacks = {};
+
+        if (els.productImageInput) els.productImageInput.value = '';
+        if (els.productName) els.productName.value = '';
+        if (els.productLink) els.productLink.value = '';
+        if (els.customInstruction) els.customInstruction.value = '';
+        if (els.customCharacterInput) els.customCharacterInput.value = '';
+        if (els.characterDetails) els.characterDetails.value = '';
+        if (els.customLocationInput) els.customLocationInput.value = '';
+        if (els.visionAnalysisBox) els.visionAnalysisBox.value = '';
+        if (els.characterLockToggle) els.characterLockToggle.checked = true;
+        if (els.backgroundLockToggle) els.backgroundLockToggle.checked = true;
+        if (els.customCharacterWrap) els.customCharacterWrap.classList.add('hidden');
+        if (els.customLocationWrap) els.customLocationWrap.classList.add('hidden');
+        if (els.outputResultsSection) els.outputResultsSection.classList.add('hidden');
+        if (els.contentPacksContainer) els.contentPacksContainer.innerHTML = '';
+
+        renderUploadedImages();
+        renderCharacterGrid();
+        renderLocationGrid();
+        renderContentStyleGrid();
+        renderVideoSettings();
+        renderOutputCheckboxes();
+        syncStudioPrompts(true);
+        showToast('Genesis AI V2.0 telah diset semula.');
+      }
+
+      // =============================================================
+      // 13. EVENT BINDINGS & INIT
+      // =============================================================
+      function bindEvents() {
+        // Hidden Owner Trigger (Tap V2.0 badge 5 times)
+        let tapCount = 0;
+        let tapTimer = null;
+        els.versionSecretBadge?.addEventListener('click', () => {
+          tapCount += 1;
+          clearTimeout(tapTimer);
+          tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+          if (tapCount >= 5) {
+            tapCount = 0;
+            if (els.geminiApiKeyInput) els.geminiApiKeyInput.value = getApiKey();
+            els.ownerConfigBar?.classList.remove('hidden');
+          }
+        });
+
+        els.closeOwnerBarBtn?.addEventListener('click', () => {
+          els.ownerConfigBar?.classList.add('hidden');
+        });
+
+        els.saveApiKeyBtn?.addEventListener('click', () => {
+          const val = (els.geminiApiKeyInput?.value || '').trim();
+          localStorage.setItem('genesis_gemini_api_key', val);
+          els.ownerConfigBar?.classList.add('hidden');
+          showToast(val ? 'Tetapan kunci AI pemilik disimpan!' : 'Kunci dipadam.');
+        });
+
+        els.resetAppBtn?.addEventListener('click', handleResetApp);
+
+        // Android Gallery & Drag-Drop Upload
+        let uploadBusy = false;
+        const onFileInputPicked = async (e) => {
+          if (uploadBusy) return;
+          const inputEl = e.target;
+          const selectedFiles = Array.from(inputEl?.files || []);
+          if (!selectedFiles.length) return;
+          uploadBusy = true;
+          try {
+            await handleImageFiles(selectedFiles);
+          } finally {
+            if (inputEl) inputEl.value = '';
+            uploadBusy = false;
+          }
+        };
+
+        els.productImageInput?.addEventListener('change', onFileInputPicked);
+        els.productImageInput?.addEventListener('input', onFileInputPicked);
+
+        ['dragenter', 'dragover'].forEach((evt) => {
+          els.uploadDropZone?.addEventListener(evt, (e) => {
+            e.preventDefault();
+            els.uploadDropZone.classList.add('drag-active');
+          });
+        });
+
+        ['dragleave', 'drop'].forEach((evt) => {
+          els.uploadDropZone?.addEventListener(evt, (e) => {
+            e.preventDefault();
+            els.uploadDropZone.classList.remove('drag-active');
+          });
+        });
+
+        els.uploadDropZone?.addEventListener('drop', (e) => {
+          handleImageFiles(e.dataTransfer?.files);
+        });
+
+        els.reanalyzeBtn?.addEventListener('click', analyzeProductImages);
+        els.visionAnalysisBox?.addEventListener('input', () => {
+          state.visionSummary = els.visionAnalysisBox.value;
+          autoResizeTextarea(els.visionAnalysisBox);
+        });
+
+        // Character & Location Controls
+        els.characterLockToggle?.addEventListener('change', () => {
+          state.characterLock = els.characterLockToggle.checked;
+          syncStudioPrompts(false);
+        });
+
+        els.backgroundLockToggle?.addEventListener('change', () => {
+          state.backgroundLock = els.backgroundLockToggle.checked;
+        });
+
+        els.customCharacterInput?.addEventListener('input', () => syncStudioPrompts(false));
+        els.characterDetails?.addEventListener('input', () => syncStudioPrompts(false));
+        els.characterTone?.addEventListener('change', () => syncStudioPrompts(false));
+        els.customLocationInput?.addEventListener('input', () => syncStudioPrompts(false));
+
+        els.characterPromptBox?.addEventListener('input', () => {
+          state.characterPromptEdited = true;
+          autoResizeTextarea(els.characterPromptBox);
+        });
+
+        els.copyCharPromptBtn?.addEventListener('click', () => {
+          copyToClipboard(els.characterPromptBox?.value || '', 'Character Prompt');
+        });
+
+        // Output Checkboxes Toggle All
+        els.toggleAllOutputsBtn?.addEventListener('click', () => {
+          const allChecked = Object.values(state.selectedOutputs).every(Boolean);
+          Object.keys(state.selectedOutputs).forEach((k) => {
+            state.selectedOutputs[k] = !allChecked;
+          });
+          els.toggleAllOutputsBtn.textContent = allChecked ? 'Pilih Semua' : 'Nyahpilih Semua';
+          renderOutputCheckboxes();
+        });
+
+        // Generate & Export
+        els.generateAllBtn?.addEventListener('click', handleGenerateAll);
+        els.copyAllOutputsBtn?.addEventListener('click', () => {
+          copyToClipboard(compileAllTextOutput(), 'Semua Output');
+        });
+
+        els.downloadTxtBtn?.addEventListener('click', () => {
+          const blob = new Blob([compileAllTextOutput()], { type: 'text/plain;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `genesis-ai-v2-${Date.now()}.txt`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('Fail .TXT berjaya dimuat turun!');
+        });
+      }
+
+      function init() {
+        try {
+          renderCharacterGrid();
+          renderLocationGrid();
+          renderContentStyleGrid();
+          renderVideoSettings();
+          renderOutputCheckboxes();
+          syncStudioPrompts(true);
+          bindEvents();
+        } catch (err) {
+          console.error('Genesis AI init error:', err);
+          showToast('Ralat semasa memuatkan studio. Sila refresh halaman.');
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
