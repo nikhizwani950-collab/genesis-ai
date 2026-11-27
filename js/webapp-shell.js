@@ -50,20 +50,29 @@ function esc(value) {
     .replace(/'/g, '&#39;');
 }
 
+function getPlanLabel(plan) {
+  const code = String(plan || 'UNLIMITED_30').trim().toUpperCase();
+  if (!code || code === 'NONE' || code === 'STANDARD' || code === 'UNLIMITED_30') {
+    return 'UNLIMITED ACCESS';
+  }
+  return code;
+}
+
 function getStatusBadge(status) {
-  switch (status) {
+  const normalized = String(status || ACCOUNT_STATUS.ACTIVE).trim().toUpperCase();
+  switch (normalized) {
     case ACCOUNT_STATUS.ACTIVE:
       return '<span class="ga-badge ga-badge-active">● AKTIF</span>';
     case ACCOUNT_STATUS.PENDING_APPROVAL:
       return '<span class="ga-badge ga-badge-pending">● MENUNGGU PENGESAHAN</span>';
     case ACCOUNT_STATUS.PENDING_PAYMENT:
-      return '<span class="ga-badge ga-badge-pending">● BELUM BAYAR</span>';
+      return '<span class="ga-badge ga-badge-active">● AKTIF</span>';
     case ACCOUNT_STATUS.SUSPENDED:
       return '<span class="ga-badge ga-badge-danger">● DIGANTUNG</span>';
     case ACCOUNT_STATUS.REJECTED:
       return '<span class="ga-badge ga-badge-danger">● DITOLAK</span>';
     default:
-      return `<span class="ga-badge ga-badge-pending">${esc(status || 'MENUNGGU')}</span>`;
+      return '<span class="ga-badge ga-badge-active">● AKTIF</span>';
   }
 }
 
@@ -183,7 +192,7 @@ function renderAuthOverlay() {
               <input id="ga-reg-pass" class="ga-input" type="password" name="password" placeholder="Cipta kata laluan" minlength="6" required autocomplete="new-password" />
             </div>
             <button type="submit" class="ga-btn ga-btn-primary" ${state.busy ? 'disabled' : ''}>
-              ${state.busy ? 'Mendaftar...' : 'Daftar Akaun Baharu'}
+              ${state.busy ? 'Mendaftar...' : 'Daftar & Masuk Terus'}
             </button>
           </form>
         ` : ''}
@@ -212,21 +221,11 @@ function renderAuthOverlay() {
 
 function renderGatekeeperOverlay() {
   const p = state.profile || {};
-  const status = p.accountStatus || ACCOUNT_STATUS.PENDING_PAYMENT;
-  const canSubmitProof =
-    status === ACCOUNT_STATUS.PENDING_PAYMENT || status === ACCOUNT_STATUS.PENDING_APPROVAL;
-  const latestPayment = state.dashboard.payments[0];
+  const status = String(p.accountStatus || ACCOUNT_STATUS.SUSPENDED).trim().toUpperCase();
 
-  let statusMsg = 'Akaun anda perlu diaktifkan sebelum menggunakan Genesis V2.';
-  if (status === ACCOUNT_STATUS.PENDING_PAYMENT) {
-    statusMsg = 'Akaun berjaya didaftarkan. Lengkapkan pembayaran dan hantar nombor rujukan transaksi di bawah untuk pengaktifan.';
-  } else if (status === ACCOUNT_STATUS.PENDING_APPROVAL) {
-    statusMsg = 'Rekod anda sedang menunggu semakan Admin. Sebaik sahaja disahkan, akses Genesis V2 akan terbuka secara automatik.';
-  } else if (status === ACCOUNT_STATUS.SUSPENDED) {
-    statusMsg = 'Akaun anda telah digantung buat sementara waktu. Sila hubungi pihak pentadbir untuk bantuan.';
-  } else if (status === ACCOUNT_STATUS.REJECTED) {
-    statusMsg = 'Permohonan pengaktifan akaun tidak diluluskan. Sila hubungi pihak pentadbir untuk semakan semula.';
-  }
+  const statusMsg = status === ACCOUNT_STATUS.REJECTED
+    ? 'Permohonan akaun tidak diluluskan. Sila hubungi pihak pentadbir untuk semakan semula.'
+    : 'Akaun anda telah digantung buat sementara waktu. Sila hubungi pihak pentadbir untuk bantuan.';
 
   return `
     <div class="ga-overlay">
@@ -234,7 +233,7 @@ function renderGatekeeperOverlay() {
         <div class="ga-brand">
           <div class="ga-logo-badge">G</div>
           <div>
-            <h1>Pengaktifan Akaun</h1>
+            <h1>Akses Akaun Disekat</h1>
             <p>${esc(p.email || state.authUser?.email || '')}</p>
           </div>
         </div>
@@ -249,32 +248,6 @@ function renderGatekeeperOverlay() {
         </div>
 
         ${renderAlert()}
-
-        ${latestPayment ? `
-          <div style="font-size:12px; color:#a7f3d0; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:10px; margin-bottom:14px;">
-            <strong>Rekod Bayaran Terkini:</strong> ${esc(latestPayment.plan)} — RM${esc(latestPayment.amount)}<br/>
-            Rujukan: <code>${esc(latestPayment.reference)}</code> (${esc(latestPayment.status)})
-          </div>
-        ` : ''}
-
-        ${canSubmitProof ? `
-          <form id="ga-payment-form" style="margin-bottom:14px;">
-            <div class="ga-field">
-              <label for="ga-pay-plan">Pilih Pelan Akses</label>
-              <select id="ga-pay-plan" class="ga-input" name="plan">
-                <option value="PRO_MONTHLY">Pro Bulanan (RM49)</option>
-                <option value="PRO_LIFETIME" selected>Pro Lifetime (RM149)</option>
-              </select>
-            </div>
-            <div class="ga-field">
-              <label for="ga-pay-ref">Nombor Rujukan Resit / FPX / DuitNow</label>
-              <input id="ga-pay-ref" class="ga-input" type="text" name="reference" placeholder="Contoh: DN20261125XXXX" required />
-            </div>
-            <button type="submit" class="ga-btn ga-btn-primary" ${state.busy ? 'disabled' : ''}>
-              ${state.busy ? 'Menghantar...' : 'Hantar Bukti Pembayaran'}
-            </button>
-          </form>
-        ` : ''}
 
         <button type="button" class="ga-btn ga-btn-danger" data-ga-action="logout" ${state.busy ? 'disabled' : ''}>
           Log Keluar
@@ -298,7 +271,7 @@ function renderDashboardDrawer() {
               Selamat datang, ${esc(p.fullName || p.email || 'Pengguna')}
             </div>
           </div>
-          <div style="display:flex; gap:8px; align-items:center;">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
             ${p.role === 'admin' ? '<span class="ga-badge ga-badge-admin">ADMIN</span>' : ''}
             ${getStatusBadge(p.accountStatus)}
           </div>
@@ -317,7 +290,7 @@ function renderDashboardDrawer() {
           </div>
           <div class="ga-stat-card">
             <div class="ga-stat-label">Pelan Semasa</div>
-            <div class="ga-stat-value" style="font-size:15px; color:var(--ga-cyan);">${esc(p.plan || 'STANDARD')}</div>
+            <div class="ga-stat-value" style="font-size:14px; color:#34d399;">${esc(getPlanLabel(p.plan))}</div>
           </div>
           <div class="ga-stat-card">
             <div class="ga-stat-label">Log Aktiviti</div>
@@ -396,7 +369,7 @@ function renderDashboardDrawer() {
           ${payments.length > 0 ? payments.map((pay) => `
             <div class="ga-list-item">
               <div>
-                <div class="ga-list-title">Bayaran ${esc(pay.plan)} — RM${esc(pay.amount)}</div>
+                <div class="ga-list-title">Bayaran ${esc(getPlanLabel(pay.plan))} — RM${esc(pay.amount)}</div>
                 <div class="ga-list-sub">Rujukan: ${esc(pay.reference)} • ${esc(formatDateMY(pay.createdAt))}</div>
               </div>
               <span class="ga-badge ${pay.status === 'PAID' ? 'ga-badge-active' : 'ga-badge-pending'}">${esc(pay.status)}</span>
@@ -457,7 +430,7 @@ function renderProfileDrawer() {
           </div>
           <div class="ga-list-item">
             <div class="ga-list-title">Pelan Aktif</div>
-            <div class="ga-list-sub">${esc(p.plan || 'STANDARD')}</div>
+            <div class="ga-list-sub" style="color:#34d399; font-weight:700;">${esc(getPlanLabel(p.plan))}</div>
           </div>
           <div class="ga-list-item">
             <div class="ga-list-title">Log Masuk Terakhir</div>
@@ -475,14 +448,17 @@ function renderProfileDrawer() {
 
 function renderActiveShell() {
   const p = state.profile || {};
-  const displayName = p.fullName || p.email || 'Akaun';
+  const displayName = p.fullName || p.email || state.authUser?.email || 'Akaun';
   const view = state.activeView;
 
   return `
     <header class="ga-topbar">
       <div class="ga-topbar-left">
         <div class="ga-topbar-logo">G</div>
-        <div class="ga-topbar-title">Genesis V2</div>
+        <div>
+          <div class="ga-topbar-title">Genesis V2</div>
+          <div style="font-size:10px; font-weight:700; color:#34d399; letter-spacing:0.4px; line-height:1.15;">● ${esc(getPlanLabel(p.plan))}</div>
+        </div>
       </div>
 
       <nav class="ga-topbar-nav">
@@ -541,15 +517,19 @@ function render() {
     return;
   }
 
-  const isActive = state.profile?.accountStatus === ACCOUNT_STATUS.ACTIVE;
-  if (!isActive) {
+  const normalizedStatus = String(state.profile?.accountStatus || ACCOUNT_STATUS.ACTIVE).trim().toUpperCase();
+  const isBlocked =
+    normalizedStatus === ACCOUNT_STATUS.SUSPENDED ||
+    normalizedStatus === ACCOUNT_STATUS.REJECTED;
+
+  if (isBlocked) {
     document.body.classList.add('ga-locked');
     document.body.classList.remove('ga-shell-active');
     root.innerHTML = renderGatekeeperOverlay();
     return;
   }
 
-  // Akaun AKTIF: Buka akses penuh ke Genesis V2 + Bar Navigasi
+  // Pengguna berdaftar & log masuk terus mendapat akses penuh UNLIMITED ACCESS
   document.body.classList.add('ga-shell-active');
   if (state.activeView === 'studio') {
     document.body.classList.remove('ga-locked');
@@ -646,8 +626,8 @@ function bindEvents() {
           message: 'Pautan tetapan semula kata laluan telah dihantar ke emel anda.'
         };
       } else if (form.id === 'ga-payment-form' && state.authUser) {
-        const plan = String(fd.get('plan') || 'PRO_LIFETIME');
-        const amount = plan === 'PRO_MONTHLY' ? 49 : 149;
+        const plan = String(fd.get('plan') || 'UNLIMITED_30');
+        const amount = 30;
         await submitPaymentProof(state.authUser.uid, {
           plan,
           amount,
@@ -656,7 +636,7 @@ function bindEvents() {
         });
         state.alert = {
           type: 'success',
-          message: 'Bukti pembayaran berjaya dihantar! Pihak Admin akan mengaktifkan akaun anda tidak lama lagi.'
+          message: 'Rekod berjaya dihantar!'
         };
       } else if (form.id === 'ga-quick-product-form' && state.authUser) {
         await saveUserProduct(state.authUser.uid, {
@@ -709,7 +689,7 @@ function initWebAppShell() {
     if (authUser) {
       unsubDashboard = watchUserDashboard(authUser.uid, (data) => {
         state.dashboard = data;
-        if (state.activeView === 'dashboard' || state.profile?.accountStatus !== ACCOUNT_STATUS.ACTIVE) {
+        if (state.activeView === 'dashboard') {
           render();
         }
       });
