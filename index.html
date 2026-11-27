@@ -1,25 +1,23 @@
 <!DOCTYPE html>
-<html lang="ms" class="dark">
-  <head> <link rel="stylesheet" href="./css/webapp-shell.css">
-  <script type="module" src="./js/webapp-shell.js"></script>
+<html lang="ms">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>GENESIS AI PROMPT V2.0 — Premium Neon Studio</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet" />
+  <title>GENESIS AI PROMPT V2.0 — Studio Kandungan AI</title>
+  <link rel="stylesheet" href="./css/webapp-shell.css" />
   <style>
     :root {
-      --bg-midnight: #050816;
-      --bg-navy: #0a1026;
-      --bg-card: rgba(11, 18, 40, 0.86);
-      --neon-cyan: #22d3ee;
-      --neon-blue: #3b82f6;
-      --neon-purple: #a855f7;
-      --neon-emerald: #10b981;
+      --bg-deep: #050914;
+      --bg-navy: #0b1224;
+      --card-glass: rgba(15, 23, 42, 0.82);
+      --border-glass: rgba(148, 163, 184, 0.18);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
+      --neon-cyan: #22d3ee;
+      --neon-purple: #a855f7;
+      --neon-emerald: #10b981;
+      --neon-amber: #f59e0b;
+      --neon-pink: #ec4899;
     }
 
     * {
@@ -27,2320 +25,794 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      background:
-        radial-gradient(circle at 12% 4%, rgba(168, 85, 247, 0.16), transparent 34%),
-        radial-gradient(circle at 88% 8%, rgba(34, 211, 238, 0.14), transparent 36%),
-        linear-gradient(180deg, #050816 0%, #070d20 50%, #050816 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top right, #131f3d 0%, var(--bg-deep) 58%);
       color: var(--text-main);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow-x: hidden;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    .font-futuristic {
-      font-family: 'Orbitron', 'Inter', sans-serif;
-      letter-spacing: 0.04em;
+    body.ga-shell-active {
+      padding-top: 66px;
+      padding-bottom: 84px;
     }
 
-    /* Outer Neon Gradient Shell */
-    .genesis-outer-shell {
-      position: relative;
-      border-radius: 24px;
-      padding: 1.5px;
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.75), rgba(59, 130, 246, 0.65), rgba(168, 85, 247, 0.8));
-      box-shadow:
-        0 0 24px rgba(59, 130, 246, 0.16),
-        0 0 42px rgba(168, 85, 247, 0.12);
+    .studio-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 14px 14px 28px;
     }
 
-    .genesis-outer-inner {
-      background: linear-gradient(180deg, rgba(9, 14, 34, 0.96) 0%, rgba(6, 10, 24, 0.98) 100%);
-      border-radius: 22.5px;
-      backdrop-filter: blur(14px);
-    }
-
-    /* Logo G Box */
-    .genesis-logo-box {
-      width: 52px;
-      height: 52px;
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.14), rgba(168, 85, 247, 0.16));
+      border: 1px solid rgba(34, 211, 238, 0.3);
       border-radius: 16px;
-      padding: 1.5px;
-      background: linear-gradient(135deg, #22d3ee, #3b82f6, #a855f7);
-      box-shadow:
-        0 0 16px rgba(34, 211, 238, 0.32),
-        0 0 24px rgba(168, 85, 247, 0.28);
-      flex-shrink: 0;
-    }
-
-    .genesis-logo-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: 14.5px;
-      background: radial-gradient(circle at 30% 25%, #161d42 0%, #070b1d 85%);
+      padding: 14px 16px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      gap: 10px;
+      backdrop-filter: blur(12px);
     }
 
-    /* Step Cards (Compact Mobile-First) */
-    .genesis-card {
-      background: var(--bg-card);
-      border: 1px solid rgba(56, 189, 248, 0.22);
-      border-radius: 20px;
-      box-shadow:
-        0 6px 24px rgba(2, 6, 23, 0.55),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    .hero-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      margin: 0;
+      background: linear-gradient(90deg, #38bdf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    /* Product Lock Pill */
-    .product-lock-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 9999px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.65);
-      color: #34d399;
-      font-size: 12px;
+    .hero-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin: 3px 0 0;
+    }
+
+    .api-toggle-btn {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      color: var(--neon-cyan);
+      font-size: 11.5px;
       font-weight: 700;
-      letter-spacing: 0.03em;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.18);
+      padding: 7px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      white-space: nowrap;
     }
 
-    /* Upload Dropzone */
-    .genesis-upload-zone {
+    .glass-card {
+      background: var(--card-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 14px;
+      backdrop-filter: blur(12px);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .step-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--neon-cyan);
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .step-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 6px 0 2px;
+    }
+
+    .step-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin: 0 0 12px;
+    }
+
+    /* Kotak Upload Mesra Android Chrome Gallery */
+    .upload-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    @media (max-width: 400px) {
+      .upload-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .upload-slot {
       position: relative;
+      height: 132px;
+      border: 1.5px dashed rgba(56, 189, 248, 0.45);
+      border-radius: 13px;
+      background: rgba(6, 11, 25, 0.72);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 20px 14px;
-      border-radius: 20px;
-      border: 1.5px dashed rgba(34, 211, 238, 0.72);
-      background:
-        radial-gradient(circle at 50% 0%, rgba(34, 211, 238, 0.1), transparent 65%),
-        radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.1), transparent 65%),
-        rgba(8, 14, 34, 0.88);
-      box-shadow:
-        0 0 18px rgba(34, 211, 238, 0.1),
-        inset 0 0 18px rgba(59, 130, 246, 0.06);
+      padding: 8px;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .upload-slot.has-image {
+      border-style: solid;
+      border-color: var(--neon-emerald);
+      padding: 0;
+    }
+
+    /* Input file telus meliputi 100% kawasan supaya Android Gallery sentiasa terbuka */
+    .upload-slot input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      z-index: 10;
       cursor: pointer;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+      margin: 0;
+      padding: 0;
     }
 
-    .genesis-upload-zone:hover,
-    .genesis-upload-zone.drag-active {
-      border-color: #67e8f9;
-      box-shadow:
-        0 0 24px rgba(34, 211, 238, 0.25),
-        inset 0 0 22px rgba(168, 85, 247, 0.12);
+    .upload-icon {
+      font-size: 22px;
+      margin-bottom: 4px;
     }
 
-    .genesis-upload-icon-box {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      padding: 1.5px;
-      background: linear-gradient(135deg, #22d3ee, #3b82f6, #a855f7);
-      box-shadow: 0 0 16px rgba(34, 211, 238, 0.28);
+    .upload-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+      line-height: 1.25;
+    }
+
+    .upload-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .preview-tag {
+      position: absolute;
+      left: 6px;
+      bottom: 6px;
+      background: rgba(5, 9, 20, 0.82);
+      color: #34d399;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .remove-img-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      z-index: 20;
+      background: rgba(225, 29, 72, 0.92);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 7px;
+      cursor: pointer;
+    }
+
+    .field-group {
       margin-bottom: 10px;
     }
 
-    .genesis-upload-icon-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: 12.5px;
-      background: #09122b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #67e8f9;
-    }
-
-    /* Unified Typography & Inputs (14px, line-height 1.6) */
-    .genesis-input {
-      width: 100%;
-      background: rgba(7, 12, 28, 0.92);
-      border: 1px solid rgba(100, 116, 139, 0.42);
-      border-radius: 14px;
-      padding: 10px 12px;
-      color: #f8fafc;
-      font-size: 14px !important;
-      line-height: 1.55 !important;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .genesis-input::placeholder {
-      color: #94a3b8;
-      font-size: 14px !important;
-    }
-
-    .genesis-input:focus {
-      border-color: #22d3ee;
-      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.18);
-    }
-
-    .genesis-textarea-gradient {
-      padding: 1px;
-      border-radius: 15px;
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.45), rgba(59, 130, 246, 0.35), rgba(168, 85, 247, 0.45));
-    }
-
-    .genesis-textarea-gradient textarea {
-      width: 100%;
+    .field-group label {
       display: block;
-      background: rgba(7, 12, 28, 0.96);
-      border: none;
-      border-radius: 14px;
-      padding: 10px 12px;
-      color: #f8fafc;
-      font-size: 14px !important;
-      line-height: 1.6 !important;
-      outline: none;
-      resize: vertical;
-      min-height: 82px;
-    }
-
-    .genesis-textarea-gradient textarea::placeholder {
-      color: #94a3b8;
-      font-size: 14px !important;
-    }
-
-    /* Uniform Output Prompt & Analysis Boxes (Wide Horizontal, 14px) */
-    .genesis-prompt-box,
-    .genesis-analysis-box {
-      width: 100% !important;
-      display: block;
-      background: rgba(6, 11, 26, 0.92);
-      border: 1px solid rgba(71, 85, 105, 0.48);
-      border-radius: 12px;
-      padding: 9px 10px;
-      color: #f1f5f9;
-      font-size: 14px !important;
-      line-height: 1.6 !important;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      resize: none;
-      overflow-y: hidden;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .genesis-prompt-box:focus {
-      border-color: #22d3ee;
-      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.16);
-    }
-
-    .genesis-output-card {
-      width: 100%;
-      background: rgba(10, 16, 36, 0.92);
-      border-radius: 18px;
-      padding: 10px;
-      border: 1px solid rgba(56, 189, 248, 0.25);
-    }
-
-    .genesis-subitem-box {
-      width: 100%;
-      background: rgba(7, 12, 28, 0.72);
-      border: 1px solid rgba(71, 85, 105, 0.35);
-      border-radius: 14px;
-      padding: 8px;
-    }
-
-    .genesis-output-label {
-      font-size: 14px;
+      font-size: 11.5px;
       font-weight: 700;
-      color: #e2e8f0;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+
+    .compact-input,
+    .compact-select,
+    .compact-textarea {
+      width: 100%;
+      background: rgba(6, 11, 25, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 11px;
+      color: #fff;
+      font-size: 13px;
+      padding: 9px 11px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .compact-textarea {
+      resize: none;
+      height: 58px;
       line-height: 1.35;
     }
 
-    .genesis-btn-compact {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      padding: 5px 9px;
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 600;
-      line-height: 1.2;
-      background: rgba(30, 41, 59, 0.85);
-      border: 1px solid rgba(100, 116, 139, 0.45);
-      color: #e2e8f0;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
+    .compact-input:focus,
+    .compact-select:focus,
+    .compact-textarea:focus {
+      border-color: var(--neon-cyan);
     }
 
-    .genesis-btn-compact:hover {
-      border-color: #22d3ee;
-      color: #67e8f9;
-      background: rgba(15, 23, 42, 0.95);
-    }
-
-    .genesis-btn-compact:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-    /* Studio Pills */
-    .studio-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    .generate-btn {
       width: 100%;
-      padding: 7px 8px;
-      border-radius: 11px;
-      font-size: 12.5px;
-      font-weight: 600;
-      line-height: 1.25;
-      background: rgba(15, 23, 42, 0.82);
-      border: 1px solid rgba(71, 85, 105, 0.48);
-      color: #cbd5e1;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .studio-pill:hover {
-      border-color: rgba(34, 211, 238, 0.6);
-      color: #f8fafc;
-    }
-
-    .studio-pill.active {
-      background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(168, 85, 247, 0.24));
-      border-color: #22d3ee;
-      color: #ffffff;
-      box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
-    }
-
-    /* Primary Generate CTA */
-    .genesis-cta-btn {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(103, 232, 249, 0.55);
-      background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 50%, #9333ea 100%);
-      color: #ffffff;
+      border: none;
+      border-radius: 13px;
+      padding: 13px 16px;
       font-size: 14px;
       font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+      color: #04101e;
+      background: linear-gradient(90deg, #22d3ee, #818cf8, #c084fc);
       cursor: pointer;
-      box-shadow: 0 0 22px rgba(59, 130, 246, 0.34);
-      transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      box-shadow: 0 6px 22px rgba(34, 211, 238, 0.25);
     }
 
-    .genesis-cta-btn:hover:not(:disabled) {
-      box-shadow: 0 0 28px rgba(34, 211, 238, 0.45);
-      transform: translateY(-1px);
-    }
-
-    .genesis-cta-btn:disabled {
+    .generate-btn:disabled {
       opacity: 0.65;
-      cursor: not-allowed;
+      cursor: wait;
     }
 
-    /* Pack Accent Borders */
-    .pack-accent-ugc { border-color: rgba(34, 211, 238, 0.45); }
-    .pack-accent-pov { border-color: rgba(168, 85, 247, 0.45); }
-    .pack-accent-commercial { border-color: rgba(59, 130, 246, 0.48); }
-    .pack-accent-demo { border-color: rgba(16, 185, 129, 0.45); }
-
-    /* Toast */
-    #toastContainer {
-      position: fixed;
-      bottom: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      pointer-events: none;
-      width: max-content;
-      max-width: 92vw;
+    /* Kad Output Neon Berkod Warna */
+    .output-section {
+      display: none;
+      margin-top: 16px;
     }
 
-    .genesis-toast {
-      background: rgba(9, 15, 36, 0.96);
-      border: 1px solid rgba(34, 211, 238, 0.6);
-      color: #f8fafc;
-      padding: 9px 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    .output-section.visible {
+      display: block;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      border-top-color: #22d3ee;
-      border-radius: 9999px;
-      animation: spin 0.7s linear infinite;
-      display: inline-block;
+    .neon-card {
+      background: rgba(10, 17, 34, 0.92);
+      border-radius: 15px;
+      padding: 13px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
     }
 
-    /* Compact AI Content Settings Style — Scoped to Langkah 2 Only */
-    #step2StudioSection {
-      background: linear-gradient(180deg, rgba(8, 13, 30, 0.96) 0%, rgba(5, 9, 22, 0.98) 100%);
-      border: 1px solid rgba(30, 58, 138, 0.72);
-      border-radius: 18px;
-      box-shadow:
-        0 4px 18px rgba(2, 6, 23, 0.6),
-        inset 0 1px 0 rgba(34, 211, 238, 0.14);
-    }
+    .neon-cyan { border-color: rgba(34, 211, 238, 0.55); box-shadow: 0 0 18px rgba(34, 211, 238, 0.08); }
+    .neon-purple { border-color: rgba(168, 85, 247, 0.55); box-shadow: 0 0 18px rgba(168, 85, 247, 0.08); }
+    .neon-amber { border-color: rgba(245, 158, 11, 0.55); box-shadow: 0 0 18px rgba(245, 158, 11, 0.08); }
+    .neon-emerald { border-color: rgba(16, 185, 129, 0.55); box-shadow: 0 0 18px rgba(16, 185, 129, 0.08); }
+    .neon-pink { border-color: rgba(236, 72, 153, 0.55); box-shadow: 0 0 18px rgba(236, 72, 153, 0.08); }
 
-    #step2StudioSection .studio-subpanel {
-      background: rgba(6, 11, 26, 0.78);
-      border: 1px solid rgba(30, 64, 175, 0.45);
-      border-radius: 14px;
-      padding: 9px 10px;
-    }
-
-    #step2StudioSection .studio-pill {
-      padding: 6px 8px;
-      border-radius: 10px;
-      font-size: 12px;
-      line-height: 1.2;
-      background: rgba(9, 16, 36, 0.92);
-      border: 1px solid rgba(30, 58, 138, 0.65);
-      color: #cbd5e1;
-      min-height: 32px;
-    }
-
-    #step2StudioSection .studio-pill:hover {
-      border-color: rgba(34, 211, 238, 0.65);
-      color: #f8fafc;
-    }
-
-    #step2StudioSection .studio-pill.active {
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(37, 99, 235, 0.24));
-      border-color: #22d3ee;
-      color: #ffffff;
-      box-shadow:
-        0 0 10px rgba(34, 211, 238, 0.28),
-        inset 0 0 8px rgba(59, 130, 246, 0.16);
-    }
-
-    #step2StudioSection .genesis-input {
-      padding: 7px 10px;
-      border-radius: 10px;
-      background: rgba(5, 10, 24, 0.94);
-      border: 1px solid rgba(30, 58, 138, 0.65);
-      font-size: 13.5px !important;
-      line-height: 1.4 !important;
-    }
-
-    #step2StudioSection .genesis-input:focus {
-      border-color: #22d3ee;
-      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.18);
-    }
-
-    #step2StudioSection .studio-toggle-pill {
-      display: inline-flex;
+    .neon-head {
+      display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 3px 8px;
-      border-radius: 9999px;
-      background: rgba(9, 16, 36, 0.92);
-      border: 1px solid rgba(34, 211, 238, 0.35);
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .neon-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .copy-mini-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #f8fafc;
       font-size: 11px;
       font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 7px;
       cursor: pointer;
     }
 
-    #step2StudioSection #characterPromptBox {
-      padding: 7px 9px;
+    .neon-body {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #e2e8f0;
+      white-space: pre-line;
+      background: rgba(5, 9, 20, 0.65);
+      padding: 10px;
       border-radius: 10px;
-      border-color: rgba(30, 58, 138, 0.65);
-      font-size: 14px !important;
-      line-height: 1.55 !important;
+    }
+
+    .prompt-grid-4 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .prompt-item {
+      background: rgba(5, 9, 20, 0.72);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      border-radius: 10px;
+      padding: 9px;
+    }
+
+    .prompt-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--neon-cyan);
+    }
+
+    .prompt-item-text {
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 86px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #10b981;
+      color: #03150e;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 999px;
+      z-index: 9999;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      display: none;
     }
   </style>
 </head>
-<body class="px-2 py-2.5 sm:px-4 sm:py-4">
-  <div class="max-w-3xl mx-auto">
-    <!-- OUTER PREMIUM NEON CONTAINER -->
-    <div class="genesis-outer-shell">
-      <div class="genesis-outer-inner p-2.5 sm:p-4 space-y-3">
-
-        <!-- =========================================================
-             1. HEADER / LOGO (HORIZONTAL COMPACT)
-             ========================================================= -->
-        <header class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-800/80">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <!-- Logo G Only -->
-            <div class="genesis-logo-box" aria-label="Genesis AI Logo">
-              <div class="genesis-logo-inner">
-                <svg viewBox="0 0 64 64" class="w-9 h-9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="gGrad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stop-color="#c084fc" />
-                      <stop offset="52%" stop-color="#3b82f6" />
-                      <stop offset="100%" stop-color="#22d3ee" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M45.5 22.5C42.5 17.6 37.3 14.5 31.3 14.5C21.8 14.5 14.2 22.2 14.2 31.8C14.2 41.4 21.8 49.1 31.5 49.1C39.8 49.1 46.8 43.3 48.3 35.4H33.5V28.4H55.2C55.6 30.2 55.8 31.8 55.8 33.8C55.8 46.8 45.4 56.5 31.5 56.5C17.6 56.5 6.8 45.5 6.8 31.8C6.8 18.1 17.6 7.1 31.3 7.1C39.7 7.1 46.9 10.9 51.4 16.9L45.5 22.5Z"
-                    fill="url(#gGrad)"
-                  />
-                  <path
-                    d="M47 10L48.6 14.4L53 16L48.6 17.6L47 22L45.4 17.6L41 16L45.4 14.4L47 10Z"
-                    fill="#67e8f9"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            <!-- Brand Typography -->
-            <div class="min-w-0">
-              <div class="flex items-center flex-wrap gap-1.5 leading-none">
-                <span class="font-futuristic text-base sm:text-lg font-extrabold tracking-wide text-white">
-                  GENESIS <span class="text-cyan-400">AI</span>
-                </span>
-              </div>
-              <div class="flex items-center gap-1.5 mt-0.5 leading-none">
-                <span class="font-futuristic text-sm sm:text-base font-extrabold bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-300 bg-clip-text text-transparent">
-                  PROMPT
-                </span>
-                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/50">
-                  V2.0
-                </span>
-              </div>
-              <p class="text-[9.5px] sm:text-[10.5px] tracking-[0.2em] text-slate-300 font-semibold mt-1 uppercase truncate">
-                CREATE &bull; GENERATE &bull; GROW
-              </p>
-            </div>
-          </div>
-
-          <!-- Reset Button -->
-          <button
-            id="resetAppBtn"
-            type="button"
-            class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-200 bg-slate-900/90 border border-slate-600/60 hover:border-cyan-400 hover:text-cyan-300 transition"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Reset
-          </button>
-        </header>
-
-        <!-- =========================================================
-             LANGKAH 1 — SOURCE REFERENCE & PRODUCT LOCK
-             ========================================================= -->
-        <section class="genesis-card p-3 sm:p-4 space-y-3">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <p class="text-[11px] font-extrabold tracking-widest uppercase text-cyan-400">LANGKAH 1</p>
-              <h2 class="text-base sm:text-lg font-extrabold uppercase tracking-wide text-white leading-tight">
-                SOURCE REFERENCE
-              </h2>
-            </div>
-            <span id="imageCountBadge" class="px-2.5 py-1 rounded-full text-xs font-bold text-cyan-300 bg-cyan-500/10 border border-cyan-400/50 shrink-0">
-              0 / 6 Gambar
-            </span>
-          </div>
-
-          <!-- Product Lock Badge -->
-          <div>
-            <span class="product-lock-pill">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                <rect x="5" y="11" width="14" height="10" rx="2" />
-                <path d="M8 11V7a4 4 0 118 0v4" />
-              </svg>
-              PRODUCT LOCK: WAJIB AKTIF
-            </span>
-          </div>
-
-          <!-- Android-Friendly Image Upload Box -->
-          <label id="uploadDropZone" for="productImageInput" class="genesis-upload-zone">
-            <input
-              id="productImageInput"
-              type="file"
-              accept="image/*"
-              multiple
-              class="sr-only"
-            />
-            <div class="genesis-upload-icon-box">
-              <div class="genesis-upload-icon-inner">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <rect x="3" y="3" width="18" height="18" rx="3" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 15l-5-5L5 21" />
-                </svg>
-              </div>
-            </div>
-            <p class="text-sm sm:text-base font-bold text-white">
-              Muat naik sehingga <span class="text-cyan-400">6 gambar</span> produk
-            </p>
-            <p class="text-xs text-slate-300 mt-1 max-w-md leading-relaxed">
-              Tap atau seret gambar ke sini &bull; AI akan analisis bentuk, warna, logo, label, material &amp; niche automatik
-            </p>
-          </label>
-
-          <!-- Uploaded Previews -->
-          <div id="imagePreviewGrid" class="hidden grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
-
-          <!-- AI Product Lock Analysis Box -->
-          <div id="visionAnalysisWrap" class="hidden space-y-1.5">
-            <div class="flex items-center justify-between gap-2">
-              <span class="genesis-output-label text-emerald-300 flex items-center gap-1.5">
-                <span id="visionSpinner" class="spinner hidden"></span>
-                Analisis AI Product Lock
-              </span>
-              <button id="reanalyzeBtn" type="button" class="genesis-btn-compact">Analisis Semula</button>
-            </div>
-            <textarea
-              id="visionAnalysisBox"
-              class="genesis-analysis-box"
-              rows="3"
-              placeholder="Analisis visual Product Lock akan dipaparkan di sini..."
-            ></textarea>
-          </div>
-
-          <!-- Product Form Inputs -->
-          <div class="space-y-2.5">
-            <div>
-              <label for="productName" class="genesis-output-label block mb-1">Nama Produk</label>
-              <input
-                id="productName"
-                type="text"
-                class="genesis-input"
-                placeholder="Contoh: Serum Vitamin C Glow 30ml / Tudung Bawal Satin"
-              />
-            </div>
-
-            <div>
-              <label for="productLink" class="genesis-output-label block mb-1">Link Produk (TikTok / Shopee / Web)</label>
-              <input
-                id="productLink"
-                type="url"
-                class="genesis-input"
-                placeholder="https://shopee.com.my/... atau beg kuning"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label for="productNiche" class="genesis-output-label block mb-1">Niche Produk</label>
-                <select id="productNiche" class="genesis-input">
-                  <option value="Auto-Detect dari Gambar">Auto-Detect AI</option>
-                  <option value="Skincare & Kecantikan">Skincare &amp; Kecantikan</option>
-                  <option value="Fesyen & Tudung">Fesyen &amp; Tudung</option>
-                  <option value="Makanan & Minuman">Makanan &amp; Minuman</option>
-                  <option value="Kesihatan & Suplemen">Kesihatan &amp; Suplemen</option>
-                  <option value="Gajet & Elektronik">Gajet &amp; Elektronik</option>
-                  <option value="Dekorasi & Rumah">Dekorasi &amp; Rumah</option>
-                  <option value="Produk Bayi & Ibu">Produk Bayi &amp; Ibu</option>
-                </select>
-              </div>
-              <div>
-                <label for="targetPlatform" class="genesis-output-label block mb-1">Platform Utama</label>
-                <select id="targetPlatform" class="genesis-input">
-                  <option value="TikTok & TikTok Shop">TikTok / Shop</option>
-                  <option value="Instagram Reels">Instagram Reels</option>
-                  <option value="Facebook Reels / Ads">Facebook Reels</option>
-                  <option value="YouTube Shorts">YouTube Shorts</option>
-                  <option value="Shopee Video">Shopee Video</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label for="customInstruction" class="genesis-output-label block mb-1">
-                Arahan Babak Bebas / Custom Instruction
-              </label>
-              <div class="genesis-textarea-gradient">
-                <textarea
-                  id="customInstruction"
-                  rows="3"
-                  placeholder="Contoh: Wanita pergi ke butik, memilih baju, mencuba dan melihat dirinya di cermin. Atau fokus kelebihan produk & target audiens anda..."
-                ></textarea>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- =========================================================
-             LANGKAH 2 — CHARACTER & LOCATION STUDIO
-             ========================================================= -->
-        <section id="step2StudioSection" class="p-2.5 sm:p-3 space-y-2">
-          <div class="flex items-center justify-between gap-2 pb-1 border-b border-blue-950/80">
-            <div class="flex items-baseline gap-2 min-w-0">
-              <p class="text-[10.5px] font-extrabold tracking-widest uppercase text-cyan-400 shrink-0">LANGKAH 2</p>
-              <h2 class="text-sm sm:text-base font-extrabold uppercase tracking-wide text-white leading-tight truncate">
-                CHARACTER &amp; LOCATION STUDIO
-              </h2>
-            </div>
-            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider text-cyan-300 bg-cyan-500/10 border border-cyan-400/35 shrink-0">
-              STUDIO
-            </span>
-          </div>
-
-          <!-- Character Studio Sub-Panel -->
-          <div class="studio-subpanel space-y-2">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-300">Character Studio</span>
-              <label class="studio-toggle-pill text-cyan-300">
-                <input id="characterLockToggle" type="checkbox" checked class="accent-cyan-400 w-3.5 h-3.5 rounded" />
-                Character Lock
-              </label>
-            </div>
-
-            <div id="characterGrid" class="grid grid-cols-2 gap-1.5"></div>
-
-            <div id="customCharacterWrap" class="hidden">
-              <input
-                id="customCharacterInput"
-                type="text"
-                class="genesis-input"
-                placeholder="Contoh: Wanita Melayu 28 tahun bertudung shawl pastel, mesra & yakin"
-              />
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-              <input
-                id="characterDetails"
-                type="text"
-                class="genesis-input"
-                placeholder="Butiran pakaian / ekspresi (pilihan)"
-              />
-              <select id="characterTone" class="genesis-input">
-                <option value="Mesra, Santai & Meyakinkan (UGC)">Mesra &amp; Santai (UGC)</option>
-                <option value="Profesional & Pakar">Profesional &amp; Pakar</option>
-                <option value="Bertenaga & Teruja (Viral)">Bertenaga &amp; Teruja</option>
-                <option value="Lembut, Estetik & Premium">Lembut &amp; Premium</option>
-              </select>
-            </div>
-
-            <div class="space-y-1 pt-0.5">
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-300">Character Prompt</span>
-                <button id="copyCharPromptBtn" type="button" class="genesis-btn-compact">Copy</button>
-              </div>
-              <textarea id="characterPromptBox" class="genesis-prompt-box" rows="2"></textarea>
-            </div>
-          </div>
-
-          <!-- Location & Background Studio Sub-Panel -->
-          <div class="studio-subpanel space-y-2">
-            <div class="flex items-center justify-between gap-1.5 flex-wrap">
-              <div class="flex items-center gap-1.5 min-w-0">
-                <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-300 shrink-0">Location Studio</span>
-                <span id="selectedLocationBadge" class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-cyan-500/10 border border-cyan-400/40 text-cyan-200 truncate max-w-[140px] sm:max-w-none">
-                  Studio Minimalis Mewah
-                </span>
-              </div>
-              <label class="studio-toggle-pill text-emerald-300 border-emerald-400/40">
-                <input id="backgroundLockToggle" type="checkbox" checked class="accent-emerald-400 w-3.5 h-3.5 rounded" />
-                Background Lock
-              </label>
-            </div>
-
-            <div id="locationGrid" class="grid grid-cols-2 gap-1.5"></div>
-
-            <div id="customLocationWrap" class="hidden">
-              <input
-                id="customLocationInput"
-                type="text"
-                class="genesis-input"
-                placeholder="Contoh: Luxury hotel lobby, Shopping mall, Rumah kampung, Taman bunga, Pantai, Boutique fashion store"
-              />
-            </div>
-
-            <div class="flex items-center gap-2">
-              <label for="lightingMood" class="text-[11px] font-bold uppercase tracking-wider text-slate-300 shrink-0">
-                Pencahayaan
-              </label>
-              <select id="lightingMood" class="genesis-input flex-1 min-w-0">
-                <option value="Cahaya Semula Jadi Lembut (Soft Daylight)">Cahaya Semula Jadi Lembut (Soft Daylight)</option>
-                <option value="Studio Komersial Cerah & Tajam (High-Key)">Studio Komersial Cerah &amp; Tajam (High-Key)</option>
-                <option value="Golden Hour Hangat & Estetik">Golden Hour Hangat &amp; Estetik</option>
-                <option value="Mewah Dramatik (Moody Luxury)">Mewah Dramatik (Moody Luxury)</option>
-                <option value="Neon Moden Futuristik">Neon Moden Futuristik</option>
-              </select>
-            </div>
-          </div>
-        </section>
-
-        <!-- =========================================================
-             LANGKAH 3 — 25 GAYA CONTENT STUDIO (MULTI-SELECT)
-             ========================================================= -->
-        <section id="step3Section" class="genesis-card p-3 sm:p-4 space-y-2.5 overflow-visible h-auto">
-          <div class="flex items-center justify-between gap-2 flex-wrap">
-            <div>
-              <p class="text-[11px] font-extrabold tracking-widest uppercase text-cyan-400">LANGKAH 3</p>
-              <h2 class="text-[15px] sm:text-lg font-extrabold uppercase tracking-wide text-white leading-tight">
-                25 GAYA CONTENT STUDIO
-              </h2>
-            </div>
-            <span id="selectedStyleBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-500/15 border border-purple-400/50 text-purple-200">
-              1 Gaya Dipilih
-            </span>
-          </div>
-
-          <div id="contentStyleGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 overflow-visible h-auto"></div>
-        </section>
-
-        <!-- =========================================================
-             LANGKAH 4 — VIDEO SETTINGS (DURASI & SCENE SAHAJA)
-             ========================================================= -->
-        <section id="step4Section" class="genesis-card p-3 sm:p-4 space-y-2.5 overflow-visible h-auto">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="text-[11px] font-extrabold tracking-widest uppercase text-cyan-400">LANGKAH 4</p>
-              <h2 class="text-[15px] sm:text-lg font-extrabold uppercase tracking-wide text-white leading-tight">
-                VIDEO SETTINGS
-              </h2>
-            </div>
-            <span id="videoSettingsBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/15 border border-cyan-400/50 text-cyan-200">
-              10 Saat &bull; 1 Scene
-            </span>
-          </div>
-
-          <div class="space-y-2">
-            <div class="space-y-1">
-              <p class="text-xs font-bold uppercase tracking-wider text-slate-300">Durasi Video</p>
-              <div id="videoDurationGrid" class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 overflow-visible h-auto"></div>
-            </div>
-
-            <div class="space-y-1">
-              <p class="text-xs font-bold uppercase tracking-wider text-slate-300">Jumlah Babak (Scene Count)</p>
-              <div id="sceneCountGrid" class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 overflow-visible h-auto"></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- =========================================================
-             LANGKAH 5 — PILIHAN OUTPUT CONTENT PACK & JANA
-             ========================================================= -->
-        <section class="genesis-card p-3 sm:p-4 space-y-2.5">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="text-[11px] font-extrabold tracking-widest uppercase text-cyan-400">LANGKAH 5</p>
-              <h2 class="text-[15px] sm:text-lg font-extrabold uppercase tracking-wide text-white leading-tight">
-                PILIHAN OUTPUT CONTENT PACK
-              </h2>
-            </div>
-            <button id="toggleAllOutputsBtn" type="button" class="genesis-btn-compact">Pilih Semua</button>
-          </div>
-
-          <div id="outputCheckboxGrid" class="grid grid-cols-2 gap-2"></div>
-
-          <button id="generateAllBtn" type="button" class="genesis-cta-btn flex items-center justify-center gap-2">
-            <span id="generateBtnSpinner" class="spinner hidden"></span>
-            <span id="generateBtnText">JANA CONTENT GENESIS AI V2.0</span>
-          </button>
-
-          <p id="generationStatusText" class="hidden text-center text-xs font-semibold text-cyan-300"></p>
-        </section>
-
-        <!-- =========================================================
-             OUTPUT AREA — 4 VISUAL CONTENT PACKS
-             ========================================================= -->
-        <section id="outputResultsSection" class="hidden space-y-3">
-          <div class="flex items-center justify-between gap-2 flex-wrap px-1">
-            <div>
-              <p class="text-[11px] font-extrabold tracking-widest uppercase text-cyan-400">HASIL STUDIO</p>
-              <h2 class="text-base font-extrabold uppercase tracking-wide text-white">
-                4 VISUAL CONTENT PACKS
-              </h2>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button id="copyAllOutputsBtn" type="button" class="genesis-btn-compact">Copy Semua</button>
-              <button id="downloadTxtBtn" type="button" class="genesis-btn-compact">Muat Turun .TXT</button>
-            </div>
-          </div>
-
-          <div id="contentPacksContainer" class="space-y-3"></div>
-        </section>
-
+<body>
+  <main class="studio-wrap">
+    <div class="hero-banner">
+      <div>
+        <h1 class="hero-title">GENESIS AI PROMPT V2.0</h1>
+        <p class="hero-sub">Studio Iklan Produk, Visual & Video TikTok Affiliate</p>
       </div>
+      <button type="button" class="api-toggle-btn" id="toggleApiBtn">🔑 API Key</button>
     </div>
-  </div>
 
-  <!-- Toast Container -->
-  <div id="toastContainer"></div>
+    <!-- Tetapan API Key Pilihan -->
+    <div class="glass-card" id="apiBox" style="display:none;">
+      <div class="field-group" style="margin-bottom:6px;">
+        <label for="geminiApiInput">Gemini API Key (Pilihan — untuk penjanaan AI langsung)</label>
+        <input type="password" id="geminiApiInput" class="compact-input" placeholder="AIzaSy..." />
+      </div>
+      <button type="button" id="saveApiBtn" class="copy-mini-btn" style="background:#22d3ee; color:#04101e; border:none; padding:6px 12px;">Simpan API Key</button>
+    </div>
 
+    <!-- LANGKAH 1: MUAT NAIK GAMBAR (ANDROID GALLERY READY) -->
+    <section class="glass-card">
+      <div class="step-header">
+        <span class="step-badge">Langkah 1 • Visual Lock</span>
+        <span style="font-size:11px; color:#34d399; font-weight:700;" id="uploadCountLabel">0 / 3 Gambar</span>
+      </div>
+      <h2 class="step-title">Muat Naik Gambar Rujukan daripada Galeri</h2>
+      <p class="step-desc">Tekan mana-mana kotak di bawah untuk pilih gambar terus dari Galeri Android anda.</p>
+
+      <div class="upload-grid">
+        <!-- Slot 1: Product Lock -->
+        <div class="upload-slot" id="slot-product">
+          <input type="file" accept="image/*" id="input-product" aria-label="Muat naik gambar produk" />
+          <div class="upload-icon">📦</div>
+          <div class="upload-label">Product Lock</div>
+          <div class="upload-hint">Gambar Produk</div>
+        </div>
+
+        <!-- Slot 2: Character Lock -->
+        <div class="upload-slot" id="slot-character">
+          <input type="file" accept="image/*" id="input-character" aria-label="Muat naik gambar model" />
+          <div class="upload-icon">🧑🏽‍🎤</div>
+          <div class="upload-label">Character Lock</div>
+          <div class="upload-hint">Model / Wajah</div>
+        </div>
+
+        <!-- Slot 3: Location Lock -->
+        <div class="upload-slot" id="slot-location">
+          <input type="file" accept="image/*" id="input-location" aria-label="Muat naik gambar latar" />
+          <div class="upload-icon">🏙️</div>
+          <div class="upload-label">Location Lock</div>
+          <div class="upload-hint">Latar / Studio</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LANGKAH 2: MAKLUMAT PRODUK & GAYA CONTENT -->
+    <section class="glass-card">
+      <div class="step-header">
+        <span class="step-badge">Langkah 2 • Gaya Content Studio</span>
+      </div>
+
+      <div class="field-group">
+        <label for="productName">Nama Produk / Jenama</label>
+        <input type="text" id="productName" class="compact-input" placeholder="Contoh: Serum Glowing Vitamin C 30ml" />
+      </div>
+
+      <div class="field-group">
+        <label for="productUsp">Kelebihan Utama (USP) & Tawaran</label>
+        <textarea id="productUsp" class="compact-textarea" placeholder="Contoh: Pudarkan parut jerawat 7 hari, lulus KKM, percuma postage hari ini"></textarea>
+      </div>
+
+      <div class="field-group">
+        <label for="contentStyle">Pilih Gaya Content (25 Pilihan)</label>
+        <select id="contentStyle" class="compact-select">
+          <option value="UGC Review Jujur">1. UGC Review Jujur (Gaya TikTok Organik)</option>
+          <option value="Masalah & Solusi Pantas">2. Masalah & Solusi Pantas (Pain-Point Hook)</option>
+          <option value="Unboxing Estetik">3. Unboxing Estetik & First Impression</option>
+          <option value="Soft Selling Emosi">4. Soft Selling Emosi & Storytelling</option>
+          <option value="Hard Selling Promo">5. Hard Selling Promo & Beg Kuning</option>
+          <option value="POV Pengguna Sebenar">6. POV Pengguna Sebenar</option>
+          <option value="Luxury Studio Komersial">7. Luxury Studio Komersial Premium</option>
+          <option value="Flatlay Minimalis">8. Flatlay Minimalis Estetik</option>
+          <option value="TikTok Live Hook">9. Skrip Pancing Penonton TikTok Live</option>
+          <option value="Testimoni & Bukti Real">10. Testimoni & Bukti Perubahan</option>
+          <option value="Perbandingan Sebelum Selepas">11. Perbandingan Sebelum vs Selepas</option>
+          <option value="Lifestyle Harian">12. Lifestyle Harian (Dalam Kereta / Rumah)</option>
+          <option value="Kempen Perayaan & Raya">13. Kempen Perayaan & Edisi Terhad</option>
+          <option value="Flash Sale 24 Jam">14. Flash Sale 24 Jam (Urgency Tinggi)</option>
+          <option value="Edukasi & Tips Ringkas">15. Edukasi & 3 Tips Pantas</option>
+          <option value="Storytelling Pengasas">16. Kisah Pengasas / Di Sebalik Tabir</option>
+          <option value="ASMR Tekstur Produk">17. ASMR Close-Up Tekstur Produk</option>
+          <option value="Skincare & Beauty Glow">18. Skincare & Beauty Glass-Skin</option>
+          <option value="F&B Menggiurkan">19. Makanan & Minuman (Foodporn Close-Up)</option>
+          <option value="Fesyen & OOTD">20. Fesyen, Tudung & OOTD</option>
+          <option value="Gajet & Aksesori Tech">21. Gajet & Demo Fungsi Pintar</option>
+          <option value="Kesihatan & Tenaga">22. Kesihatan, Kecergasan & Tenaga</option>
+          <option value="Ibu, Bayi & Keluarga">23. Ibu, Bayi & Keperluan Keluarga</option>
+          <option value="Hadiah & Kotak Kejutan">24. Idea Hadiah & Gift Box</option>
+          <option value="Gaya Viral FYP Pantas">25. Gaya Viral FYP 15 Saat</option>
+        </select>
+      </div>
+
+      <div class="field-group" style="margin-bottom:14px;">
+        <label for="sceneNote">Arahan Adegan Tambahan (Pilihan)</label>
+        <input type="text" id="sceneNote" class="compact-input" placeholder="Contoh: Pencahayaan waktu pagi, pegang produk dekat kamera" />
+      </div>
+
+      <button type="button" id="generateAllBtn" class="generate-btn">✨ Jana 4 Visual Prompt, Video & Skrip Viral</button>
+    </section>
+
+    <!-- HASIL PENJANAAN -->
+    <section class="output-section" id="outputSection">
+      <!-- 1. 4 AI Product Image Prompts -->
+      <div class="neon-card neon-cyan">
+        <div class="neon-head">
+          <span class="neon-title" style="color:var(--neon-cyan);">🖼️ 4 AI PRODUCT IMAGE PROMPTS</span>
+          <button type="button" class="copy-mini-btn" id="saveCloudBtn">☁️ Simpan Projek</button>
+        </div>
+        <div class="prompt-grid-4" id="imagePromptsGrid"></div>
+      </div>
+
+      <!-- 2. Video Prompt (Kling / Runway / Veo) -->
+      <div class="neon-card neon-purple">
+        <div class="neon-head">
+          <span class="neon-title" style="color:#d8b4fe;">🎬 AI VIDEO PROMPT (6-10 SAAT)</span>
+          <button type="button" class="copy-mini-btn" data-copy-target="videoPromptOut">Salin</button>
+        </div>
+        <div class="neon-body" id="videoPromptOut"></div>
+      </div>
+
+      <!-- 3. Viral Hooks -->
+      <div class="neon-card neon-amber">
+        <div class="neon-head">
+          <span class="neon-title" style="color:#fcd34d;">⚡ 5 VIRAL HOOKS (3 SAAT PERTAMA)</span>
+          <button type="button" class="copy-mini-btn" data-copy-target="hooksOut">Salin</button>
+        </div>
+        <div class="neon-body" id="hooksOut"></div>
+      </div>
+
+      <!-- 4. Storyboard & Voice Over -->
+      <div class="neon-card neon-pink">
+        <div class="neon-head">
+          <span class="neon-title" style="color:#f9a8d4;">🎙️ STORYBOARD & SKRIP VOICE-OVER</span>
+          <button type="button" class="copy-mini-btn" data-copy-target="storyboardOut">Salin</button>
+        </div>
+        <div class="neon-body" id="storyboardOut"></div>
+      </div>
+
+      <!-- 5. Kapsyen TikTok / Reels / Shopee -->
+      <div class="neon-card neon-emerald">
+        <div class="neon-head">
+          <span class="neon-title" style="color:#6ee7b7;">📝 KAPSYEN JUALAN & HASHTAG</span>
+          <button type="button" class="copy-mini-btn" data-copy-target="captionOut">Salin</button>
+        </div>
+        <div class="neon-body" id="captionOut"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast-msg" id="toastMsg">Disalin!</div>
+
+  <script type="module" src="./js/webapp-shell.js"></script>
   <script>
-    (function () {
-      'use strict';
+    const uploadedImages = {
+      product: null,
+      character: null,
+      location: null
+    };
 
-      // =============================================================
-      // 1. CONSTANTS & STUDIO DATA
-      // =============================================================
-      const apiKey = '';
-      const API_KEY = apiKey;
-      const TEXT_MODEL = 'gemini-3-flash-preview';
-      const IMAGE_GENERATE_CONTENT_MODELS = [
-        'gemini-2.5-flash-image-preview',
-        'gemini-2.0-flash-exp-image-generation'
-      ];
-      const IMAGEN_FALLBACK_MODEL = 'imagen-3.0-generate-002';
+    const slotMeta = {
+      product: { icon: '📦', label: 'Product Lock', hint: 'Gambar Produk', tag: 'Produk Locked' },
+      character: { icon: '🧑🏽‍🎤', label: 'Character Lock', hint: 'Model / Wajah', tag: 'Model Locked' },
+      location: { icon: '🏙️', label: 'Location Lock', hint: 'Latar / Studio', tag: 'Lokasi Locked' }
+    };
 
-      const CHARACTER_OPTIONS = [
-        'Wanita Melayu Moden',
-        'Lelaki Melayu Profesional',
-        'Creator Gen-Z Ceria',
-        'Ibu Muda Mesra',
-        'Model Komersial Elegan',
-        'Pakar / Konsultan',
-        'POV Tangan Sahaja',
-        'Custom Watak'
-      ];
+    function showToast(text) {
+      const el = document.getElementById('toastMsg');
+      el.textContent = text;
+      el.style.display = 'block';
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        el.style.display = 'none';
+      }, 2200);
+    }
 
-      const LOCATION_OPTIONS = [
-        'Studio Minimalis Mewah',
-        'Bilik Tidur Estetik',
-        'Meja Solek / Vanity',
-        'Kafe Moden Cerah',
-        'Outdoor Cahaya Natural',
-        'Ruang Tamu Moden',
-        'Dapur Estetik',
-        'Custom Lokasi'
-      ];
+    function updateUploadCounter() {
+      const count = Object.values(uploadedImages).filter(Boolean).length;
+      document.getElementById('uploadCountLabel').textContent = `${count} / 3 Gambar`;
+    }
 
-      const CONTENT_STYLES = [
-        { id: 1, name: 'UGC Review Jujur' },
-        { id: 2, name: 'POV First-Person' },
-        { id: 3, name: 'Unboxing Estetik' },
-        { id: 4, name: 'Soft Selling Santai' },
-        { id: 5, name: 'Hard Selling Viral' },
-        { id: 6, name: 'Storytelling Emosi' },
-        { id: 7, name: 'Before & After' },
-        { id: 8, name: 'Problem → Solution' },
-        { id: 9, name: 'Tutorial Step-by-Step' },
-        { id: 10, name: 'ASMR Close-Up' },
-        { id: 11, name: 'Cinematic Luxury Ad' },
-        { id: 12, name: 'Day In My Life' },
-        { id: 13, name: 'GRWM (Get Ready)' },
-        { id: 14, name: 'Myth vs Fact' },
-        { id: 15, name: '3 Sebab Wajib Cuba' },
-        { id: 16, name: 'Testimoni Pelanggan' },
-        { id: 17, name: 'Comparison / VS' },
-        { id: 18, name: 'Behind The Scenes' },
-        { id: 19, name: 'Mini Vlog Harian' },
-        { id: 20, name: 'FOMO / Limited Promo' },
-        { id: 21, name: 'Skit Komedi Ringan' },
-        { id: 22, name: 'Tips & Edukasi Pakar' },
-        { id: 23, name: 'Stop-Motion Kreatif' },
-        { id: 24, name: 'Voiceover penceritaan' },
-        { id: 25, name: 'Live-Style Demo' }
-      ];
-
-      const VIDEO_DURATIONS = [10, 15, 20, 30, 45, 60];
-      const SCENE_COUNTS = [1, 2, 3, 4, 5, 6];
-
-      const OUTPUT_CHECKBOXES = [
-        { key: 'imagePrompt', label: 'Prompt Gambar', defaultChecked: true },
-        { key: 'videoPrompt', label: 'Prompt Video', defaultChecked: true },
-        { key: 'hooks', label: '5 Viral Hooks', defaultChecked: true },
-        { key: 'captions', label: '5 Captions', defaultChecked: true },
-        { key: 'dialog', label: 'Dialog / Skrip', defaultChecked: true },
-        { key: 'voiceover', label: 'Voice Over', defaultChecked: true },
-        { key: 'hashtags', label: 'Hashtag', defaultChecked: true },
-        { key: 'cta', label: 'CTA', defaultChecked: true },
-        { key: 'storyboard', label: 'Storyboard (Dynamic Panel)', defaultChecked: false }
-      ];
-
-      const PACK_DEFINITIONS = [
-        {
-          id: 'ugc',
-          index: 1,
-          header: 'IMAGE 1 — UGC',
-          badge: 'UGC CREATOR',
-          accentClass: 'pack-accent-ugc',
-          badgeClass: 'bg-cyan-500/15 text-cyan-300 border-cyan-400/50',
-          conceptGuide: 'Authentic creator review, natural handheld selfie or casual lifestyle framing, realistic social media look, relatable human expression holding/showing the exact product.'
-        },
-        {
-          id: 'pov',
-          index: 2,
-          header: 'IMAGE 2 — POV HAND',
-          badge: 'POV HAND',
-          accentClass: 'pack-accent-pov',
-          badgeClass: 'bg-purple-500/15 text-purple-300 border-purple-400/50',
-          conceptGuide: 'First-person POV perspective looking down or forward at a realistic human hand holding, opening, or applying the exact product in natural motion.'
-        },
-        {
-          id: 'commercial',
-          index: 3,
-          header: 'IMAGE 3 — COMMERCIAL AD',
-          badge: 'COMMERCIAL AD',
-          accentClass: 'pack-accent-commercial',
-          badgeClass: 'bg-blue-500/15 text-blue-300 border-blue-400/50',
-          conceptGuide: 'High-end commercial advertising campaign, cinematic studio/editorial lighting, razor-sharp product hero composition, luxury brand feel.'
-        },
-        {
-          id: 'demo',
-          index: 4,
-          header: 'IMAGE 4 — PRODUCT DEMO',
-          badge: 'PRODUCT DEMO',
-          accentClass: 'pack-accent-demo',
-          badgeClass: 'bg-emerald-500/15 text-emerald-300 border-emerald-400/50',
-          conceptGuide: 'Clear close-up product demonstration in real-life action, showing texture, usage, fit, or key functional benefit clearly.'
-        }
-      ];
-
-      // =============================================================
-      // 2. APPLICATION STATE
-      // =============================================================
-      const state = {
-        uploadedImages: [], // { id, name, mimeType, base64, dataUrl }
-        visionSummary: '',
-        selectedCharacter: 'Wanita Melayu Moden',
-        characterLock: true,
-        characterPromptEdited: false,
-        selectedLocation: 'Studio Minimalis Mewah',
-        backgroundLock: true,
-        selectedStyles: [1],
-        videoDuration: 10,
-        sceneCount: 1,
-        selectedOutputs: {
-          imagePrompt: true,
-          videoPrompt: true,
-          hooks: true,
-          captions: true,
-          dialog: true,
-          voiceover: true,
-          hashtags: true,
-          cta: true,
-          storyboard: false
-        },
-        isGenerating: false,
-        contentPacks: {} // keyed by pack.id: ugc, pov, commercial, demo
-      };
-
-      // =============================================================
-      // 3. DOM REFERENCES
-      // =============================================================
-      const els = {
-        resetAppBtn: document.getElementById('resetAppBtn'),
-        imageCountBadge: document.getElementById('imageCountBadge'),
-        uploadDropZone: document.getElementById('uploadDropZone'),
-        productImageInput: document.getElementById('productImageInput'),
-        imagePreviewGrid: document.getElementById('imagePreviewGrid'),
-        visionAnalysisWrap: document.getElementById('visionAnalysisWrap'),
-        visionSpinner: document.getElementById('visionSpinner'),
-        visionAnalysisBox: document.getElementById('visionAnalysisBox'),
-        reanalyzeBtn: document.getElementById('reanalyzeBtn'),
-
-        productName: document.getElementById('productName'),
-        productLink: document.getElementById('productLink'),
-        productNiche: document.getElementById('productNiche'),
-        targetPlatform: document.getElementById('targetPlatform'),
-        customInstruction: document.getElementById('customInstruction'),
-
-        characterLockToggle: document.getElementById('characterLockToggle'),
-        characterGrid: document.getElementById('characterGrid'),
-        customCharacterWrap: document.getElementById('customCharacterWrap'),
-        customCharacterInput: document.getElementById('customCharacterInput'),
-        characterDetails: document.getElementById('characterDetails'),
-        characterTone: document.getElementById('characterTone'),
-        characterPromptBox: document.getElementById('characterPromptBox'),
-        copyCharPromptBtn: document.getElementById('copyCharPromptBtn'),
-
-        selectedLocationBadge: document.getElementById('selectedLocationBadge'),
-        backgroundLockToggle: document.getElementById('backgroundLockToggle'),
-        locationGrid: document.getElementById('locationGrid'),
-        customLocationWrap: document.getElementById('customLocationWrap'),
-        customLocationInput: document.getElementById('customLocationInput'),
-        lightingMood: document.getElementById('lightingMood'),
-
-        selectedStyleBadge: document.getElementById('selectedStyleBadge'),
-        contentStyleGrid: document.getElementById('contentStyleGrid'),
-
-        videoSettingsBadge: document.getElementById('videoSettingsBadge'),
-        videoDurationGrid: document.getElementById('videoDurationGrid'),
-        sceneCountGrid: document.getElementById('sceneCountGrid'),
-
-        toggleAllOutputsBtn: document.getElementById('toggleAllOutputsBtn'),
-        outputCheckboxGrid: document.getElementById('outputCheckboxGrid'),
-        generateAllBtn: document.getElementById('generateAllBtn'),
-        generateBtnSpinner: document.getElementById('generateBtnSpinner'),
-        generateBtnText: document.getElementById('generateBtnText'),
-        generationStatusText: document.getElementById('generationStatusText'),
-
-        outputResultsSection: document.getElementById('outputResultsSection'),
-        contentPacksContainer: document.getElementById('contentPacksContainer'),
-        copyAllOutputsBtn: document.getElementById('copyAllOutputsBtn'),
-        downloadTxtBtn: document.getElementById('downloadTxtBtn'),
-        toastContainer: document.getElementById('toastContainer')
-      };
-
-      // =============================================================
-      // 4. UTILITIES
-      // =============================================================
-      function escapeHtml(str) {
-        return String(str ?? '')
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#39;');
-      }
-
-      function showToast(message) {
-        if (!els.toastContainer) return;
-        const div = document.createElement('div');
-        div.className = 'genesis-toast';
-        div.textContent = message;
-        els.toastContainer.innerHTML = '';
-        els.toastContainer.appendChild(div);
-        setTimeout(() => {
-          if (div.parentNode) div.parentNode.removeChild(div);
-        }, 2600);
-      }
-
-      // Safe fallback copy for Android WebViews & iFrames
-      function fallbackCopyText(val, label) {
-        const temp = document.createElement('textarea');
-        temp.value = val;
-        temp.setAttribute('readonly', '');
-        temp.style.position = 'fixed';
-        temp.style.top = '0';
-        temp.style.left = '0';
-        temp.style.opacity = '0';
-        document.body.appendChild(temp);
-        temp.focus();
-        temp.select();
-        try {
-          const ok = document.execCommand('copy');
-          showToast(ok ? `${label} berjaya disalin!` : 'Gagal menyalin teks.');
-        } catch (err) {
-          showToast('Gagal menyalin teks.');
-        } finally {
-          document.body.removeChild(temp);
-        }
-      }
-
-      function copyToClipboard(text, label = 'Teks') {
-        const val = String(text || '').trim();
-        if (!val) {
-          showToast('Tiada teks untuk disalin.');
-          return;
-        }
-        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function' && window.isSecureContext) {
-          navigator.clipboard.writeText(val)
-            .then(() => showToast(`${label} berjaya disalin!`))
-            .catch(() => fallbackCopyText(val, label));
-          return;
-        }
-        fallbackCopyText(val, label);
-      }
-
-      function autoResizeTextarea(el) {
-        if (!el) return;
-        el.style.height = 'auto';
-        el.style.height = Math.max(54, el.scrollHeight + 2) + 'px';
-      }
-
-      function safeParseJSON(rawText) {
-        if (!rawText || typeof rawText !== 'string') return null;
-        let cleaned = rawText.trim();
-        cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-        try {
-          return JSON.parse(cleaned);
-        } catch (_) {
-          const firstBrace = cleaned.indexOf('{');
-          const lastBrace = cleaned.lastIndexOf('}');
-          if (firstBrace !== -1 && lastBrace > firstBrace) {
-            try {
-              return JSON.parse(cleaned.slice(firstBrace, lastBrace + 1));
-            } catch (__) {
-              return null;
-            }
-          }
-          return null;
-        }
-      }
-
-      function calculateSceneTimings(durationSec, sceneCount) {
-        const total = Math.max(5, Number(durationSec) || 10);
-        const count = Math.max(1, Math.min(6, Number(sceneCount) || 1));
-        const step = total / count;
-        const timings = [];
-        for (let i = 0; i < count; i++) {
-          const start = Number((i * step).toFixed(1));
-          const end = i === count - 1 ? total : Number(((i + 1) * step).toFixed(1));
-          const fmt = (n) => (Number.isInteger(n) ? `${n}s` : `${n}s`);
-          timings.push({
-            sceneNumber: i + 1,
-            start,
-            end,
-            label: `Scene ${i + 1} — ${fmt(start)} hingga ${fmt(end)}`
-          });
-        }
-        return timings;
-      }
-
-      function getStoryboardLayoutSpec(sceneCount) {
-        const c = Math.max(1, Math.min(6, Number(sceneCount) || 1));
-        const map = {
-          1: { panels: 1, gridDesc: '1 single wide cinematic storyboard frame labeled "Scene 1"', aspectRatio: '16:9' },
-          2: { panels: 2, gridDesc: '2 horizontal side-by-side storyboard panels labeled "Scene 1" and "Scene 2"', aspectRatio: '16:9' },
-          3: { panels: 3, gridDesc: '3 sequential storyboard panels in a clean 3-panel row labeled "Scene 1", "Scene 2", "Scene 3"', aspectRatio: '16:9' },
-          4: { panels: 4, gridDesc: '4 sequential storyboard panels in a clean 2x2 grid labeled "Scene 1", "Scene 2", "Scene 3", "Scene 4"', aspectRatio: '16:9' },
-          5: { panels: 5, gridDesc: '5 sequential storyboard panels arranged cleanly (3 top, 2 bottom) labeled "Scene 1" to "Scene 5"', aspectRatio: '16:9' },
-          6: { panels: 6, gridDesc: '6 sequential storyboard panels in a clean 3x2 grid labeled "Scene 1" to "Scene 6"', aspectRatio: '16:9' }
-        };
-        return map[c] || map[1];
-      }
-
-      function normalizeStoryboardScenes(rawScenes, timings) {
-        const list = Array.isArray(rawScenes) ? rawScenes : [];
-        return timings.map((t, idx) => {
-          const item = list[idx];
-          if (typeof item === 'string' && item.trim()) {
-            return { sceneNumber: t.sceneNumber, timeRange: t.label, prompt: item.trim() };
-          }
-          if (item && typeof item === 'object') {
-            const txt = item.prompt || item.description || item.visual || item.text || '';
-            return {
-              sceneNumber: t.sceneNumber,
-              timeRange: t.label,
-              prompt: String(txt).trim() || `${t.label}: Paparan visual produk secara jelas dan natural.`
-            };
-          }
-          return {
-            sceneNumber: t.sceneNumber,
-            timeRange: t.label,
-            prompt: `${t.label}: Paparan visual produk secara jelas dan natural.`
-          };
-        });
-      }
-
-      // =============================================================
-      // 5. GEMINI API HELPER WITH BACKOFF & TIMEOUT
-      // =============================================================
-      async function fetchWithBackoff(url, payload, { timeoutMs = 55000, maxRetries = 3 } = {}) {
-        let attempt = 0;
-        let lastError = null;
-        while (attempt < maxRetries) {
-          const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), timeoutMs);
+    // Pemampatan Canvas supaya foto kamera Android bersaiz besar terus muncul tanpa hang
+    function compressAndroidImage(file, maxSide = 1024, quality = 0.85) {
+      return new Promise((resolve, reject) => {
+        const objectUrl = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
           try {
-            const res = await fetch(url, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload),
-              signal: controller.signal
-            });
-            clearTimeout(timer);
-            if (!res.ok) {
-              const errText = await res.text().catch(() => '');
-              const httpErr = new Error(`HTTP ${res.status}`);
-              httpErr.status = res.status;
-              httpErr.rawBody = errText;
-              throw httpErr;
-            }
-            return await res.json();
-          } catch (err) {
-            clearTimeout(timer);
-            lastError = err;
-            // Do not waste retries on non-retryable client/permission errors
-            if (err && [400, 401, 403, 404].includes(err.status)) {
-              throw err;
-            }
-            attempt += 1;
-            if (attempt < maxRetries) {
-              await new Promise((r) => setTimeout(r, Math.pow(2, attempt - 1) * 1000));
-            }
-          }
-        }
-        throw lastError || new Error('Permintaan API gagal.');
-      }
-
-      function formatImageGenerationError(err) {
-        const status = err?.status || Number((String(err?.message || '').match(/HTTP\s*(\d{3})/i) || [])[1]) || 0;
-        const raw = `${err?.message || ''} ${err?.rawBody || ''}`;
-
-      
-  if (status === 403 || /PERMISSION_DENIED|permission denied|API_KEY_INVALID|forbidden/i.test(raw)) {
-          return 'Akses servis penjanaan imej disekat (HTTP 403). Model imej memerlukan kebenaran API / API key yang sah atau pengaktifan billing pada projek Google AI Studio jika dijalankan di luar persekitaran Canvas yang disokong. Sila tekan "Cuba Jana Imej Semula".';
-        }
-        if (status === 429 || /RESOURCE_EXHAUSTED|rate limit|quota/i.test(raw)) {
-          return 'Had permintaan AI dicapai buat sementara waktu. Sila tunggu beberapa saat dan tekan "Cuba Jana Imej Semula".';
-        }
-        if (err?.name === 'AbortError' || /abort|timeout|network|failed to fetch/i.test(raw)) {
-          return 'Sambungan ke servis imej AI tamat masa atau terganggu. Sila semak sambungan internet dan tekan "Cuba Jana Imej Semula".';
-        }
-        if (status === 400 || err?.code === 'NO_IMAGE' || /SAFETY|BLOCKED|PROHIBITED|ditapis/i.test(raw)) {
-          return 'Prompt visual ditapis oleh sistem keselamatan atau gagal menghasilkan gambar. Sila ubah sedikit arahan atau tekan "Cuba Jana Imej Semula".';
-        }
-        return 'Penjanaan imej AI gagal buat sementara waktu. Sila tekan "Cuba Jana Imej Semula".';
-      }
-
-      async function callGeminiText(parts, { systemPrompt = '', jsonMode = false } = {}) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent?key=${apiKey}`;
-        const payload = {
-          contents: [{ role: 'user', parts }]
-        };
-        if (systemPrompt) {
-          payload.systemInstruction = { parts: [{ text: systemPrompt }] };
-        }
-        if (jsonMode) {
-          payload.generationConfig = { responseMimeType: 'application/json' };
-        }
-        const data = await fetchWithBackoff(url, payload, { timeoutMs: 55000 });
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        if (!text) throw new Error('Tiada respons teks daripada AI.');
-        return text;
-      }
-
-      function extractGeneratedImageDataUrl(data) {
-        const parts = data?.candidates?.[0]?.content?.parts || [];
-        for (const p of parts) {
-          const inline = p?.inlineData || p?.inline_data;
-          if (inline?.data) {
-            const mime = inline.mimeType || inline.mime_type || 'image/png';
-            return `data:${mime};base64,${inline.data}`;
-          }
-        }
-        const predB64 = data?.predictions?.[0]?.bytesBase64Encoded;
-        if (predB64) {
-          return `data:image/png;base64,${predB64}`;
-        }
-        return '';
-      }
-
-      async function callGeminiImage(promptText, referenceImages = [], aspectRatio = '9:16') {
-        const parts = [
-          { text: aspectRatio ? `${promptText}\nAspect ratio: ${aspectRatio}.` : promptText }
-        ];
-        referenceImages.slice(0, 6).forEach((img) => {
-          if (img?.base64 && img?.mimeType) {
-            parts.push({
-              inlineData: {
-                mimeType: img.mimeType,
-                data: img.base64
+            let { width, height } = img;
+            if (width > maxSide || height > maxSide) {
+              if (width > height) {
+                height = Math.round((height * maxSide) / width);
+                width = maxSide;
+              } else {
+                width = Math.round((width * maxSide) / height);
+                height = maxSide;
               }
-            });
-          }
-        });
-
-        let lastError = null;
-
-        // Primary & Fallback 1: Multimodal generateContent models (supports Product Lock reference images)
-        for (const modelName of IMAGE_GENERATE_CONTENT_MODELS) {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-          const payload = {
-            contents: [{ role: 'user', parts }],
-            generationConfig: {
-              responseModalities: ['TEXT', 'IMAGE']
             }
-          };
-          try {
-            const data = await fetchWithBackoff(url, payload, { timeoutMs: 65000, maxRetries: 2 });
-            const imageUrl = extractGeneratedImageDataUrl(data);
-            if (imageUrl) return imageUrl;
-
-            const noImgErr = new Error('Tiada data imej dikembalikan.');
-            noImgErr.code = 'NO_IMAGE';
-            lastError = noImgErr;
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            URL.revokeObjectURL(objectUrl);
+            resolve(dataUrl);
           } catch (err) {
-            lastError = err;
-            const raw = `${err?.message || ''} ${err?.rawBody || ''}`;
-            const canFallback = [403, 404, 400].includes(err?.status) ||
-              /PERMISSION_DENIED|NOT_FOUND|not supported|unsupported/i.test(raw);
-            if (!canFallback) {
-              throw err;
-            }
+            URL.revokeObjectURL(objectUrl);
+            reject(err);
           }
-        }
-
-        // Fallback 2: Imagen 3 predict endpoint (text-only fallback if both generateContent image models are unavailable)
-        try {
-          const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_FALLBACK_MODEL}:predict?key=${apiKey}`;
-          const imagenPayload = {
-            instances: [{ prompt: promptText }],
-            parameters: { sampleCount: 1 }
-          };
-          const data = await fetchWithBackoff(imagenUrl, imagenPayload, { timeoutMs: 65000, maxRetries: 2 });
-          const imageUrl = extractGeneratedImageDataUrl(data);
-          if (imageUrl) return imageUrl;
-
-          const noImgErr = new Error('Tiada data imej dikembalikan daripada Imagen.');
-          noImgErr.code = 'NO_IMAGE';
-          throw noImgErr;
-        } catch (err) {
-          throw lastError || err;
-        }
-      }
-
-      // =============================================================
-      // 6. IMAGE UPLOAD & VISION ANALYSIS (ANDROID GALLERY SAFE)
-      // =============================================================
-      function readFileAsDataUrl(file) {
-        return new Promise((resolve, reject) => {
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
           const reader = new FileReader();
           reader.onload = () => resolve(reader.result);
-          reader.onerror = () => reject(new Error('Gagal membaca fail gambar.'));
+          reader.onerror = reject;
           reader.readAsDataURL(file);
-        });
-      }
-
-      // Accept Android Gallery files even when MIME type is empty or application/octet-stream
-      function isSupportedImageFile(file) {
-        if (!file) return false;
-        const type = String(file.type || '').toLowerCase();
-        if (type.startsWith('image/')) return true;
-        if (!type || type === 'application/octet-stream') return true;
-        return /\.(jpe?g|png|webp|gif|bmp|heic|heif|avif)$/i.test(file.name || '');
-      }
-
-      // Resize/compress large Android camera photos via canvas to prevent browser memory crash/reload
-      async function processImageFile(file) {
-        const MAX_DIM = 1280;
-        const JPEG_QUALITY = 0.85;
-
-        const compressViaCanvas = () => new Promise((resolve, reject) => {
-          if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
-            reject(new Error('createObjectURL tidak disokong'));
-            return;
-          }
-          const objectUrl = URL.createObjectURL(file);
-          const img = new Image();
-          img.onload = () => {
-            try {
-              const origW = img.naturalWidth || img.width || 0;
-              const origH = img.naturalHeight || img.height || 0;
-              if (!origW || !origH) {
-                throw new Error('Dimensi imej tidak sah');
-              }
-
-              let targetW = origW;
-              let targetH = origH;
-              if (origW > MAX_DIM || origH > MAX_DIM) {
-                const scale = Math.min(MAX_DIM / origW, MAX_DIM / origH);
-                targetW = Math.max(1, Math.round(origW * scale));
-                targetH = Math.max(1, Math.round(origH * scale));
-              }
-
-              const canvas = document.createElement('canvas');
-              canvas.width = targetW;
-              canvas.height = targetH;
-              const ctx = canvas.getContext('2d');
-              if (!ctx) throw new Error('Kanvas tidak tersedia');
-
-              ctx.drawImage(img, 0, 0, targetW, targetH);
-              const dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
-              const base64 = dataUrl.split(',')[1] || '';
-              if (!base64) throw new Error('Data imej kosong');
-
-              resolve({
-                mimeType: 'image/jpeg',
-                base64,
-                dataUrl
-              });
-            } catch (err) {
-              reject(err);
-            } finally {
-              URL.revokeObjectURL(objectUrl);
-            }
-          };
-          img.onerror = () => {
-            URL.revokeObjectURL(objectUrl);
-            reject(new Error('Gagal menyahkod imej melalui kanvas'));
-          };
-          img.src = objectUrl;
-        });
-
-        try {
-          return await compressViaCanvas();
-        } catch (_) {
-          const rawDataUrl = await readFileAsDataUrl(file);
-          const parts = String(rawDataUrl || '').split(',');
-          const meta = parts[0] || '';
-          const base64 = parts[1] || '';
-          if (!base64) throw new Error('Fail gambar kosong.');
-          const mimeMatch = meta.match(/data:(.*?);base64/);
-          let mimeType = (mimeMatch && mimeMatch[1]) ? mimeMatch[1].toLowerCase() : String(file.type || '').toLowerCase();
-          if (!mimeType || mimeType === 'application/octet-stream' || !mimeType.startsWith('image/')) {
-            mimeType = 'image/jpeg';
-          }
-          return {
-            mimeType,
-            base64,
-            dataUrl: `data:${mimeType};base64,${base64}`
-          };
-        }
-      }
-
-      async function handleImageFiles(fileList) {
-        const rawFiles = Array.from(fileList || []);
-        if (!rawFiles.length) return;
-
-        const files = rawFiles.filter(isSupportedImageFile);
-        if (!files.length) {
-          showToast('Fail yang dipilih tidak disokong. Sila pilih gambar (JPG/PNG/WEBP).');
-          return;
-        }
-
-        const remaining = 6 - state.uploadedImages.length;
-        if (remaining <= 0) {
-          showToast('Maksimum 6 gambar produk telah dicapai.');
-          return;
-        }
-
-        const toAdd = files.slice(0, remaining);
-        let addedCount = 0;
-
-        for (const file of toAdd) {
-          try {
-            const processed = await processImageFile(file);
-            state.uploadedImages.push({
-              id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-              name: file.name || 'product.jpg',
-              mimeType: processed.mimeType,
-              base64: processed.base64,
-              dataUrl: processed.dataUrl
-            });
-            addedCount += 1;
-          } catch (err) {
-            showToast('Sebahagian gambar gagal dimuat naik.');
-          }
-        }
-
-        // Render thumbnails immediately before calling AI vision analysis
-        renderUploadedImages();
-
-        if (addedCount > 0) {
-          showToast(`${addedCount} gambar produk berjaya dimuat naik!`);
-          await analyzeProductImages();
-        }
-      }
-
-      function renderUploadedImages() {
-        const count = state.uploadedImages.length;
-        if (els.imageCountBadge) {
-          els.imageCountBadge.textContent = `${count} / 6 Gambar`;
-        }
-        if (!els.imagePreviewGrid) return;
-
-        if (count === 0) {
-          els.imagePreviewGrid.classList.add('hidden');
-          els.imagePreviewGrid.innerHTML = '';
-          if (els.visionAnalysisWrap) els.visionAnalysisWrap.classList.add('hidden');
-          return;
-        }
-
-        els.imagePreviewGrid.classList.remove('hidden');
-        els.imagePreviewGrid.innerHTML = state.uploadedImages.map((img, idx) => `
-          <div class="relative rounded-xl overflow-hidden border border-cyan-400/40 bg-slate-950 aspect-square">
-            <img src="${img.dataUrl}" alt="Produk ${idx + 1}" class="w-full h-full object-cover" />
-            <button
-              type="button"
-              data-remove-img="${img.id}"
-              class="absolute top-1 right-1 w-5 h-5 rounded-full bg-slate-950/85 border border-rose-400/70 text-rose-300 text-xs font-bold flex items-center justify-center"
-              aria-label="Buang gambar"
-            >&times;</button>
-          </div>
-        `).join('');
-
-        els.imagePreviewGrid.querySelectorAll('[data-remove-img]').forEach((btn) => {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const id = btn.getAttribute('data-remove-img');
-            state.uploadedImages = state.uploadedImages.filter((item) => item.id !== id);
-            renderUploadedImages();
-          });
-        });
-      }
-
-      async function analyzeProductImages() {
-        if (!state.uploadedImages.length || !els.visionAnalysisWrap || !els.visionAnalysisBox) return;
-        els.visionAnalysisWrap.classList.remove('hidden');
-        if (els.visionSpinner) els.visionSpinner.classList.remove('hidden');
-        if (els.reanalyzeBtn) els.reanalyzeBtn.disabled = true;
-        els.visionAnalysisBox.value = 'Sedang menganalisis bentuk, warna, logo, label, material & niche produk...';
-        autoResizeTextarea(els.visionAnalysisBox);
-
-        try {
-          const parts = [
-            {
-              text: 'Analisis gambar produk ini secara terperinci dalam Bahasa Melayu ringkas dan padat untuk sistem PRODUCT LOCK. Nyatakan: (1) Bentuk & jenis packaging, (2) Warna utama & aksen, (3) Logo / label / tulisan tepat pada produk, (4) Material & tekstur, (5) Cadangan niche & kelebihan visual utama.'
-            }
-          ];
-          state.uploadedImages.forEach((img) => {
-            parts.push({ inlineData: { mimeType: img.mimeType, data: img.base64 } });
-          });
-
-          const analysis = await callGeminiText(parts);
-          state.visionSummary = analysis.trim();
-          els.visionAnalysisBox.value = state.visionSummary;
-          autoResizeTextarea(els.visionAnalysisBox);
-        } catch (err) {
-          els.visionAnalysisBox.value = 'Analisis automatik gagal. Anda boleh taip butiran produk secara manual di sini atau klik Analisis Semula.';
-          autoResizeTextarea(els.visionAnalysisBox);
-        } finally {
-          if (els.visionSpinner) els.visionSpinner.classList.add('hidden');
-          if (els.reanalyzeBtn) els.reanalyzeBtn.disabled = false;
-        }
-      }
-
-      // =============================================================
-      // 7. STUDIO RENDERERS (CHARACTER, LOCATION, 25 STYLES, VIDEO, CHECKBOXES)
-      // =============================================================
-      function syncStudioPrompts(forceUpdate = false) {
-        const charName = state.selectedCharacter === 'Custom Watak'
-          ? ((els.customCharacterInput?.value || '').trim() || 'Watak pilihan pengguna')
-          : state.selectedCharacter;
-        const charDetails = (els.characterDetails?.value || '').trim();
-        const charTone = els.characterTone?.value || 'Mesra, Santai & Meyakinkan (UGC)';
-
-        if (els.characterPromptBox && (forceUpdate || !state.characterPromptEdited)) {
-          const lockPrefix = state.characterLock ? '[CHARACTER LOCK AKTIF] ' : '';
-          els.characterPromptBox.value = `${lockPrefix}${charName}${charDetails ? ', ' + charDetails : ''}. Ekspresi natural, konsisten di setiap babak, persona: ${charTone}.`;
-          autoResizeTextarea(els.characterPromptBox);
-        }
-
-        const activeLocName = state.selectedLocation === 'Custom Lokasi'
-          ? ((els.customLocationInput?.value || '').trim() || 'Custom Lokasi')
-          : state.selectedLocation;
-        if (els.selectedLocationBadge) {
-          els.selectedLocationBadge.textContent = activeLocName;
-        }
-      }
-
-      function renderCharacterGrid() {
-        if (!els.characterGrid) return;
-        els.characterGrid.innerHTML = CHARACTER_OPTIONS.map((name) => `
-          <button
-            type="button"
-            data-char="${escapeHtml(name)}"
-            class="studio-pill ${state.selectedCharacter === name ? 'active' : ''}"
-          >
-            ${escapeHtml(name)}
-          </button>
-        `).join('');
-
-        els.characterGrid.querySelectorAll('[data-char]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            state.selectedCharacter = btn.getAttribute('data-char');
-            if (els.customCharacterWrap) {
-              els.customCharacterWrap.classList.toggle('hidden', state.selectedCharacter !== 'Custom Watak');
-            }
-            renderCharacterGrid();
-            syncStudioPrompts(false);
-          });
-        });
-      }
-
-      function renderLocationGrid() {
-        if (!els.locationGrid) return;
-        els.locationGrid.innerHTML = LOCATION_OPTIONS.map((name) => `
-          <button
-            type="button"
-            data-loc="${escapeHtml(name)}"
-            class="studio-pill ${state.selectedLocation === name ? 'active' : ''}"
-          >
-            ${escapeHtml(name)}
-          </button>
-        `).join('');
-
-        els.locationGrid.querySelectorAll('[data-loc]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            state.selectedLocation = btn.getAttribute('data-loc');
-            if (els.customLocationWrap) {
-              els.customLocationWrap.classList.toggle('hidden', state.selectedLocation !== 'Custom Lokasi');
-            }
-            renderLocationGrid();
-            syncStudioPrompts(false);
-          });
-        });
-      }
-
-      function renderContentStyleGrid() {
-        if (!els.contentStyleGrid) return;
-        const count = state.selectedStyles.length;
-        if (els.selectedStyleBadge) {
-          els.selectedStyleBadge.textContent = count === 0 ? 'Auto (AI Pilih)' : `${count} Gaya Dipilih`;
-        }
-
-        els.contentStyleGrid.innerHTML = CONTENT_STYLES.map((style) => {
-          const isActive = state.selectedStyles.includes(style.id);
-          return `
-            <button
-              type="button"
-              data-style-id="${style.id}"
-              class="studio-pill ${isActive ? 'active' : ''}"
-            >
-              ${style.id}. ${escapeHtml(style.name)}
-            </button>
-          `;
-        }).join('');
-
-        els.contentStyleGrid.querySelectorAll('[data-style-id]').forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const id = Number(btn.getAttribute('data-style-id'));
-            if (state.selectedStyles.includes(id)) {
-              state.selectedStyles = state.selectedStyles.filter((s) => s !== id);
-            } else {
-              state.selectedStyles = [...state.selectedStyles, id];
-            }
-            renderContentStyleGrid();
-          });
-        });
-      }
-
-      function renderVideoSettings() {
-        if (els.videoSettingsBadge) {
-          els.videoSettingsBadge.textContent = `${state.videoDuration} Saat • ${state.sceneCount} ${state.sceneCount === 1 ? 'Scene' : 'Scenes'}`;
-        }
-
-        if (els.videoDurationGrid) {
-          els.videoDurationGrid.innerHTML = VIDEO_DURATIONS.map((sec) => `
-            <button
-              type="button"
-              data-duration="${sec}"
-              class="studio-pill ${state.videoDuration === sec ? 'active' : ''}"
-            >
-              ${sec} Saat
-            </button>
-          `).join('');
-
-          els.videoDurationGrid.querySelectorAll('[data-duration]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-              state.videoDuration = Number(btn.getAttribute('data-duration')) || 10;
-              renderVideoSettings();
-            });
-          });
-        }
-
-        if (els.sceneCountGrid) {
-          els.sceneCountGrid.innerHTML = SCENE_COUNTS.map((cnt) => `
-            <button
-              type="button"
-              data-scene-count="${cnt}"
-              class="studio-pill ${state.sceneCount === cnt ? 'active' : ''}"
-            >
-              ${cnt} ${cnt === 1 ? 'Scene' : 'Scenes'}
-            </button>
-          `).join('');
-
-          els.sceneCountGrid.querySelectorAll('[data-scene-count]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-              state.sceneCount = Number(btn.getAttribute('data-scene-count')) || 1;
-              renderVideoSettings();
-            });
-          });
-        }
-      }
-
-      function renderOutputCheckboxes() {
-        if (!els.outputCheckboxGrid) return;
-        els.outputCheckboxGrid.innerHTML = OUTPUT_CHECKBOXES.map((item) => {
-          const checked = Boolean(state.selectedOutputs[item.key]);
-          return `
-            <label class="flex items-center gap-2 px-2.5 py-2 rounded-xl border ${checked ? 'border-cyan-400/60 bg-cyan-500/10 text-white' : 'border-slate-700/60 bg-slate-900/70 text-slate-300'} cursor-pointer text-xs font-semibold transition">
-              <input
-                type="checkbox"
-                data-output-key="${item.key}"
-                ${checked ? 'checked' : ''}
-                class="accent-cyan-400 w-4 h-4 rounded shrink-0"
-              />
-              <span class="leading-tight">${escapeHtml(item.label)}</span>
-            </label>
-          `;
-        }).join('');
-
-        els.outputCheckboxGrid.querySelectorAll('[data-output-key]').forEach((cb) => {
-          cb.addEventListener('change', () => {
-            const key = cb.getAttribute('data-output-key');
-            state.selectedOutputs[key] = cb.checked;
-            renderOutputCheckboxes();
-          });
-        });
-      }
-
-      // =============================================================
-      // 8. CREATIVE CONTEXT BUILDER (SMART DIRECTION A -> B -> C -> D)
-      // =============================================================
-      function getCreativeContext() {
-        const productName = (els.productName?.value || '').trim() || 'Produk Rujukan Pengguna';
-        const productLink = (els.productLink?.value || '').trim();
-        const niche = els.productNiche?.value || 'Auto-Detect dari Gambar';
-        const platform = els.targetPlatform?.value || 'TikTok & TikTok Shop';
-        const freeSceneDirection = (els.customInstruction?.value || '').trim();
-        const hasFreeSceneDirection = freeSceneDirection.length > 0;
-        const visionSummary = (els.visionAnalysisBox?.value || state.visionSummary || '').trim() || 'Ikut 100% rupa fizikal gambar produk yang dimuat naik.';
-
-        const character = state.selectedCharacter === 'Custom Watak'
-          ? ((els.customCharacterInput?.value || '').trim() || 'Watak pilihan pengguna')
-          : state.selectedCharacter;
-        const characterDetails = (els.characterDetails?.value || '').trim();
-        const characterTone = els.characterTone?.value || 'Mesra, Santai & Meyakinkan (UGC)';
-        const characterPrompt = (els.characterPromptBox?.value || '').trim();
-
-        const location = state.selectedLocation === 'Custom Lokasi'
-          ? ((els.customLocationInput?.value || '').trim() || 'Custom Lokasi')
-          : state.selectedLocation;
-        const lightingMood = els.lightingMood?.value || 'Cahaya Semula Jadi Lembut (Soft Daylight)';
-        const isBackgroundLocked = Boolean(state.backgroundLock);
-
-        const locationLockRule = isBackgroundLocked
-          ? `LOCATION LOCK AKTIF (WAJIB PATUH 100%): Lokasi utama dikunci pada "${location}" dengan mood pencahayaan "${lightingMood}". Kekalkan identiti latar belakang, persekitaran, props utama dan susun atur tempat yang SAMA merentasi SEMUA gambar, SEMUA babak/scene, Prompt Gambar, Prompt Video, Storyboard dan Dialog. Sudut kamera, framing, zoom, close-up dan wide shot boleh dipelbagaikan, tetapi DILARANG KERAS menukar atau mencipta lokasi lain.`
-          : `LOCATION REFERENCE (BACKGROUND LOCK OFF): Gunakan "${location}" (${lightingMood}) sebagai lokasi rujukan permulaan. AI dibenarkan beralih ke lokasi lain pada babak seterusnya hanya jika sesuai dengan jalan cerita dan Arahan Babak Bebas pengguna.`;
-
-        const selectedStyleIds = Array.isArray(state.selectedStyles) ? state.selectedStyles : [];
-        const selectedStyleNames = selectedStyleIds
-          .map((id) => CONTENT_STYLES.find((s) => s.id === id)?.name)
-          .filter(Boolean);
-        const styleName = selectedStyleNames.length > 0
-          ? selectedStyleNames.join(' + ')
-          : 'Auto (Gaya paling sesuai dengan produk & jalan cerita)';
-
-        const sceneTimings = calculateSceneTimings(state.videoDuration, state.sceneCount);
-
-        // KEUTAMAAN A: Arahan Babak Bebas
-        const priorityA = hasFreeSceneDirection
-          ? `KEUTAMAAN A — ARAHAN BABAK BEBAS (JALAN CERITA UTAMA WAJIB):
-"${freeSceneDirection}"
-- Jadikan arahan pengguna ini sebagai jalan cerita, situasi dan aksi UTAMA. Jangan abaikan atau gantikan dengan idea lain. Kembangkan secara natural dan realistik.`
-          : `KEUTAMAAN A — JALAN CERITA AUTOMATIK:
-Pengguna tidak menulis Arahan Babak Bebas. Cipta jalan cerita yang paling menarik, natural dan sesuai berdasarkan gambar produk, nama produk, Product Lock, gaya Content Video, niche dan platform.`;
-
-        // KEUTAMAAN B: Gaya Content Video Multi-Select
-        const priorityB = selectedStyleNames.length > 0
-          ? `KEUTAMAAN B — GAYA CONTENT VIDEO (${selectedStyleNames.length} GAYA DIPILIH):
-${styleName}
-- Gabungkan semua gaya yang dipilih secara lancar dan logik (tentukan gaya dominan & gaya sokongan supaya flow natural dan tidak bercelaru).`
-          : `KEUTAMAAN B — GAYA CONTENT VIDEO:
-Tiada gaya khusus dipilih. Pilih gaya content video yang paling berkesan untuk produk ini secara automatik.`;
-
-        // KEUTAMAAN C: Product Lock
-        const priorityC = `KEUTAMAAN C — SUMBER RUJUKAN + PRODUCT LOCK (IDENTITI PRODUK 100%):
-Jumlah gambar rujukan dimuat naik: ${state.uploadedImages.length} gambar.
-Analisis Product Lock: ${visionSummary}
-- Produk WAJIB kekal 100% sama dari segi bentuk, warna, logo, label, tulisan, packaging, material dan design.`;
-
-        // KEUTAMAAN D: Location Lock
-        const priorityD = `KEUTAMAAN D — LOCATION LOCK & BACKGROUND STUDIO:
-- Lokasi Pilihan Pengguna: ${location}
-- Mood Pencahayaan: ${lightingMood}
-- Status Background Lock: ${isBackgroundLocked ? 'ON (DIKUNCI)' : 'OFF (FLEKSIBEL)'}
-- ${locationLockRule}`;
-
-        const smartDirectionBlock = `=== SISTEM GABUNGAN ARAHAN PINTAR GENESIS AI ===\n${priorityA}\n\n${priorityB}\n\n${priorityC}\n\n${priorityD}\n=============================================`;
-
-        return {
-          uploadedImages: state.uploadedImages,
-          productLock: true,
-          visionSummary,
-          productName,
-          productLink,
-          niche,
-          platform,
-          freeSceneDirection,
-          hasFreeSceneDirection,
-          character,
-          characterLock: Boolean(state.characterLock),
-          characterDetails,
-          characterTone,
-          characterPrompt,
-          location,
-          backgroundLock: isBackgroundLocked,
-          locationLockRule,
-          lightingMood,
-          styleIds: selectedStyleIds,
-          styleNames: selectedStyleNames,
-          styleName,
-          videoDuration: state.videoDuration,
-          sceneCount: state.sceneCount,
-          sceneTimings,
-          selectedOutputs: { ...state.selectedOutputs },
-          smartDirectionBlock
         };
-      }
+        img.src = objectUrl;
+      });
+    }
 
-      // Expose globally for safety
-      window.getCreativeContext = getCreativeContext;
+    function renderUploadSlot(key) {
+      const slot = document.getElementById(`slot-${key}`);
+      const meta = slotMeta[key];
+      const dataUrl = uploadedImages[key];
 
-      // =============================================================
-      // 9. GENERATION LOGIC (4 VISUAL CONTENT PACKS + STORYBOARD)
-      // =============================================================
-      async function generatePackTextBundle(def, ctx) {
-        const timingListText = ctx.sceneTimings.map((t) => `- ${t.label}`).join('\n');
-        const sbSpec = getStoryboardLayoutSpec(ctx.sceneCount);
-
-        const prompt = `Anda ialah Pengarah Kreatif & Copywriter AI pakar pemasaran Malaysia.
-Hasilkan CONTENT PACK KHUSUS untuk konsep: ${def.header} (${def.conceptGuide}).
-
-${ctx.smartDirectionBlock}
-
-BUTIRAN TAMBAHAN:
-- Produk: ${ctx.productName} | Niche: ${ctx.niche} | Platform: ${ctx.platform}
-- Link: ${ctx.productLink || 'Tiada'}
-- Watak: ${ctx.character} (${ctx.characterDetails || 'Natural'}) | Character Lock: ${ctx.characterLock ? 'AKTIF' : 'OFF'}
-- Gaya Bahasa: ${ctx.characterTone}
-- Lokasi: ${ctx.location} (${ctx.lightingMood}) | Background Lock: ${ctx.backgroundLock ? 'ON (WAJIB SAMA)' : 'OFF'}
-- Video Settings: ${ctx.videoDuration} Saat • ${ctx.sceneCount} Scene(s)
-Agihan Masa Scene:
-${timingListText}
-
-ARAHAN KETAT:
-1. Hasilkan kandungan UNIK khusus untuk konsep ${def.header}. Jangan tiru konsep lain.
-2. Kembalikan JSON SAH sahaja dengan kunci berikut:
-{
-  "imagePrompt": "Prompt gambar AI terperinci dalam Bahasa Inggeris untuk konsep ${def.header}, patuh Product Lock, Character Lock, Location Lock (${ctx.location}) dan jalan cerita.",
-  "videoScenes": [
-    { "sceneNumber": 1, "prompt": "Prompt video AI terperinci untuk Scene 1 mengikut masa dan konsep ${def.header}." }
-  ],
-  "hooks": ["Hook 1", "Hook 2", "Hook 3", "Hook 4", "Hook 5"],
-  "captions": ["Caption 1", "Caption 2", "Caption 3", "Caption 4", "Caption 5"],
-  "dialog": "Skrip dialog natural dalam Bahasa Melayu sesuai visual & durasi ${ctx.videoDuration}s.",
-  "voiceover": "Skrip voice over menarik dalam Bahasa Melayu sesuai durasi ${ctx.videoDuration}s.",
-  "hashtags": "#hashtag1 #hashtag2 ... (10-15 hashtag relevan)",
-  "cta": "Ayat Call-To-Action mantap sesuai konsep ${def.header} & platform ${ctx.platform}.",
-  "storyboardMasterPrompt": "Master prompt dalam Bahasa Inggeris untuk SATU storyboard sheet mengandungi ${sbSpec.gridDesc} dengan Product Lock, Character Lock dan Location Lock (${ctx.location}).",
-  "storyboardScenes": [
-    { "sceneNumber": 1, "prompt": "Huraian visual & kamera panel Scene 1" }
-  ]
-}
-Pastikan "videoScenes" dan "storyboardScenes" mempunyai TEPAT ${ctx.sceneCount} item, manakala "hooks" dan "captions" mempunyai TEPAT 5 item.`;
-
-        const parts = [{ text: prompt }];
-        ctx.uploadedImages.slice(0, 3).forEach((img) => {
-          parts.push({ inlineData: { mimeType: img.mimeType, data: img.base64 } });
-        });
-
-        const raw = await callGeminiText(parts, { jsonMode: true });
-        const parsed = safeParseJSON(raw) || {};
-
-        const videoScenes = ctx.sceneTimings.map((t, idx) => {
-          const item = Array.isArray(parsed.videoScenes) ? parsed.videoScenes[idx] : null;
-          const text = typeof item === 'string' ? item : (item?.prompt || item?.description || '');
-          return {
-            sceneNumber: t.sceneNumber,
-            timeRange: t.label,
-            prompt: text.trim() || `${t.label}: Babak ${def.badge} menonjolkan ${ctx.productName} di ${ctx.location}.`
-          };
-        });
-
-        const hooks = Array.from({ length: 5 }, (_, i) => {
-          const val = Array.isArray(parsed.hooks) ? parsed.hooks[i] : '';
-          return String(val || '').trim() || `Hook ${i + 1} (${def.badge}): Rahsia ${ctx.productName} yang ramai baru tahu!`;
-        });
-
-        const captions = Array.from({ length: 5 }, (_, i) => {
-          const val = Array.isArray(parsed.captions) ? parsed.captions[i] : '';
-          return String(val || '').trim() || `Caption ${i + 1} (${def.badge}): Cuba ${ctx.productName} hari ini dan rasai perbezaannya.`;
-        });
-
-        const storyboardScenes = normalizeStoryboardScenes(parsed.storyboardScenes, ctx.sceneTimings);
-
-        return {
-          imagePrompt: String(parsed.imagePrompt || '').trim() || `${def.conceptGuide} Featuring ${ctx.productName} at ${ctx.location}, ${ctx.lightingMood}.`,
-          videoScenes,
-          hooks,
-          captions,
-          dialog: String(parsed.dialog || '').trim(),
-          voiceover: String(parsed.voiceover || '').trim(),
-          hashtags: String(parsed.hashtags || '').trim(),
-          cta: String(parsed.cta || '').trim(),
-          storyboardMasterPrompt: String(parsed.storyboardMasterPrompt || '').trim() || `Professional ${sbSpec.gridDesc} for ${ctx.productName} (${def.badge}) in ${ctx.location}, consistent product design and lighting.`,
-          storyboardScenes
-        };
-      }
-
-      async function generateSinglePackImage(packId, ctx) {
-        const def = PACK_DEFINITIONS.find((p) => p.id === packId);
-        const pack = state.contentPacks[packId];
-        if (!def || !pack || pack.imageLoading) return;
-
-        pack.imageLoading = true;
-        pack.imageError = '';
-        updatePackImageUI(packId);
-
-        try {
-          const productLockText = ctx.uploadedImages.length > 0
-            ? `STRICT PRODUCT LOCK: Keep the uploaded reference product 100% identical in shape, color, logo, label, text, packaging, and material. Do NOT redesign or alter the product.`
-            : `Product Name: ${ctx.productName}.`;
-
-          const locText = ctx.backgroundLock
-            ? `STRICT LOCATION LOCK (ON): Keep exact location "${ctx.location}" with "${ctx.lightingMood}" lighting.`
-            : `Location Reference: "${ctx.location}" (${ctx.lightingMood}).`;
-
-          const finalPrompt = `${productLockText}\nVisual Concept: ${def.header} — ${def.conceptGuide}\n${ctx.characterLock ? `Character Lock: ${ctx.characterPrompt}` : ''}\n${locText}\nDetailed Scene Prompt: ${pack.imagePrompt}`;
-
-          const imgUrl = await callGeminiImage(finalPrompt, ctx.uploadedImages, '9:16');
-          pack.imageUrl = imgUrl;
-          pack.imageError = '';
-        } catch (err) {
-          pack.imageError = formatImageGenerationError(err);
-        } finally {
-          pack.imageLoading = false;
-          updatePackImageUI(packId);
-        }
-      }
-
-      async function generateSinglePackStoryboardImage(packId, ctx) {
-        const def = PACK_DEFINITIONS.find((p) => p.id === packId);
-        const pack = state.contentPacks[packId];
-        if (!def || !pack || pack.storyboardLoading) return;
-
-        pack.storyboardLoading = true;
-        pack.storyboardError = '';
-        updatePackStoryboardImageUI(packId);
-
-        try {
-          const sbSpec = getStoryboardLayoutSpec(ctx.sceneCount);
-          const locLockText = ctx.backgroundLock
-            ? `STRICT LOCATION LOCK (ON): Every panel MUST stay in "${ctx.location}" (${ctx.lightingMood}) with consistent background identity and props.`
-            : `LOCATION REFERENCE: Start in "${ctx.location}" (${ctx.lightingMood}).`;
-
-          const scenesSummary = (pack.storyboardScenes || [])
-            .map((s) => `${s.timeRange}: ${s.prompt}`)
-            .join('\n');
-
-          const prompt = `Create ONE clean visual storyboard sheet with ${sbSpec.gridDesc}.
-STRICT PRODUCT LOCK: Keep the uploaded reference product 100% identical in every panel.
-${ctx.characterLock ? `CHARACTER LOCK: Keep the exact same character identity across all panels (${ctx.characterPrompt}).` : ''}
-${locLockText}
-Concept: ${def.header} (${def.conceptGuide})
-Master Prompt: ${pack.storyboardMasterPrompt}
-Panel Breakdown:
-${scenesSummary}`;
-
-          const imgUrl = await callGeminiImage(prompt, ctx.uploadedImages, sbSpec.aspectRatio);
-          pack.storyboardImageUrl = imgUrl;
-          pack.storyboardError = '';
-        } catch (err) {
-          pack.storyboardError = formatImageGenerationError(err);
-        } finally {
-          pack.storyboardLoading = false;
-          updatePackStoryboardImageUI(packId);
-        }
-      }
-
-      async function handleGenerateAll() {
-        if (state.isGenerating) return;
-        const ctx = getCreativeContext();
-
-        const anyOutputChecked = Object.values(ctx.selectedOutputs).some(Boolean);
-        if (!anyOutputChecked) {
-          showToast('Sila tandakan sekurang-kurangnya satu pilihan output.');
-          return;
-        }
-
-        state.isGenerating = true;
-        if (els.generateAllBtn) els.generateAllBtn.disabled = true;
-        if (els.generateBtnSpinner) els.generateBtnSpinner.classList.remove('hidden');
-        if (els.generateBtnText) els.generateBtnText.textContent = 'SEDANG MENJANA 4 CONTENT PACKS...';
-        if (els.generationStatusText) {
-          els.generationStatusText.classList.remove('hidden');
-          els.generationStatusText.textContent = 'Menjana teks & visual untuk UGC, POV Hand, Commercial Ad & Product Demo...';
-        }
-
-        try {
-          // Initialize isolated pack objects
-          PACK_DEFINITIONS.forEach((def) => {
-            state.contentPacks[def.id] = {
-              id: def.id,
-              imageUrl: '',
-              imageLoading: false,
-              imageError: '',
-              imagePrompt: '',
-              videoScenes: [],
-              hooks: [],
-              captions: [],
-              dialog: '',
-              voiceover: '',
-              hashtags: '',
-              cta: '',
-              storyboardImageUrl: '',
-              storyboardLoading: false,
-              storyboardError: '',
-              storyboardMasterPrompt: '',
-              storyboardScenes: []
-            };
-          });
-
-          if (els.outputResultsSection) els.outputResultsSection.classList.remove('hidden');
-          renderAllContentPacks();
-
-          // 1. Generate text bundles in parallel
-          const textResults = await Promise.allSettled(
-            PACK_DEFINITIONS.map(async (def) => {
-              const bundle = await generatePackTextBundle(def, ctx);
-              Object.assign(state.contentPacks[def.id], bundle);
-              return def.id;
-            })
-          );
-
-          renderAllContentPacks();
-
-          // 2. Generate 4 AI Images (+ Storyboard sheets if checked) in parallel
-          const mediaJobs = [];
-          PACK_DEFINITIONS.forEach((def) => {
-            mediaJobs.push(generateSinglePackImage(def.id, ctx));
-            if (ctx.selectedOutputs.storyboard) {
-              mediaJobs.push(generateSinglePackStoryboardImage(def.id, ctx));
-            }
-          });
-
-          await Promise.allSettled(mediaJobs);
-
-          const failedCount = textResults.filter((r) => r.status === 'rejected').length;
-          if (failedCount > 0) {
-            showToast(`Janaan selesai (${failedCount} pek perlu jana semula).`);
-          } else {
-            showToast('Semua 4 Visual Content Packs berjaya dijana!');
-          }
-        } catch (err) {
-          showToast(`Ralat menjana kandungan: ${err.message || 'Sila cuba lagi.'}`);
-        } finally {
-          state.isGenerating = false;
-          if (els.generateAllBtn) els.generateAllBtn.disabled = false;
-          if (els.generateBtnSpinner) els.generateBtnSpinner.classList.add('hidden');
-          if (els.generateBtnText) els.generateBtnText.textContent = 'JANA CONTENT GENESIS AI V2.0';
-          if (els.generationStatusText) els.generationStatusText.classList.add('hidden');
-        }
-      }
-
-      async function regenerateEntirePack(packId) {
-        const def = PACK_DEFINITIONS.find((p) => p.id === packId);
-        if (!def) return;
-        const ctx = getCreativeContext();
-        showToast(`Menjana semula ${def.header}...`);
-        try {
-          const bundle = await generatePackTextBundle(def, ctx);
-          Object.assign(state.contentPacks[packId], bundle);
-          renderAllContentPacks();
-          await generateSinglePackImage(packId, ctx);
-          if (ctx.selectedOutputs.storyboard) {
-            await generateSinglePackStoryboardImage(packId, ctx);
-          }
-          showToast(`${def.header} berjaya dijana semula!`);
-        } catch (err) {
-          showToast(`Gagal menjana semula ${def.header}.`);
-        }
-      }
-
-      async function regeneratePackField(packId, field, index = null) {
-        const def = PACK_DEFINITIONS.find((p) => p.id === packId);
-        const pack = state.contentPacks[packId];
-        if (!def || !pack) return;
-        const ctx = getCreativeContext();
-
-        showToast(`Menjana semula ${field}...`);
-        try {
-          let taskDesc = '';
-          if (field === 'imagePrompt') {
-            taskDesc = `Tulis semula 1 Prompt Gambar AI (Bahasa Inggeris) yang baru dan lebih menarik untuk ${def.header} (${def.conceptGuide}).`;
-          } else if (field === 'videoScene') {
-            const sc = pack.videoScenes[index];
-            taskDesc = `Tulis semula Prompt Video AI untuk ${sc?.timeRange || 'Scene ' + (index + 1)} bagi konsep ${def.header}.`;
-          } else if (field === 'hook') {
-            taskDesc = `Tulis 1 Viral Hook Bahasa Melayu yang baru dan berbeza untuk Hook #${index + 1} konsep ${def.header}.`;
-          } else if (field === 'caption') {
-            taskDesc = `Tulis 1 Caption media sosial Bahasa Melayu yang baru untuk Caption #${index + 1} konsep ${def.header}.`;
-          } else if (field === 'storyboardScene') {
-            const sc = pack.storyboardScenes[index];
-            taskDesc = `Tulis semula huraian panel storyboard untuk ${sc?.timeRange || 'Scene ' + (index + 1)} bagi konsep ${def.header}.`;
-          } else {
-            taskDesc = `Tulis semula bahagian "${field}" dalam Bahasa Melayu untuk konsep ${def.header}.`;
-          }
-
-          const prompt = `${ctx.smartDirectionBlock}\n\nProduk: ${ctx.productName} | Lokasi: ${ctx.location} | Gaya: ${ctx.styleName}\nTugasan: ${taskDesc}\nKembalikan teks jawapan sahaja tanpa sebarang nota tambahan.`;
-          const newText = (await callGeminiText([{ text: prompt }])).trim();
-
-          if (field === 'videoScene' && pack.videoScenes[index]) {
-            pack.videoScenes[index].prompt = newText;
-          } else if (field === 'hook' && Array.isArray(pack.hooks)) {
-            pack.hooks[index] = newText;
-          } else if (field === 'caption' && Array.isArray(pack.captions)) {
-            pack.captions[index] = newText;
-          } else if (field === 'storyboardScene' && pack.storyboardScenes[index]) {
-            pack.storyboardScenes[index].prompt = newText;
-          } else {
-            pack[field] = newText;
-          }
-
-          renderAllContentPacks();
-          showToast('Berjaya dijana semula!');
-        } catch (err) {
-          showToast('Gagal menjana semula item ini.');
-        }
-      }
-
-      // =============================================================
-      // 10. RENDERING 4 VISUAL CONTENT PACKS
-      // =============================================================
-      function updatePackImageUI(packId) {
-        const slot = document.getElementById(`pack-img-slot-${packId}`);
-        const pack = state.contentPacks[packId];
-        if (!slot || !pack) return;
-
-        if (pack.imageLoading) {
-          slot.innerHTML = `
-            <div class="w-full py-12 flex flex-col items-center justify-center gap-2 text-cyan-300 text-xs font-semibold">
-              <span class="spinner"></span>
-              <span>Menjana Visual AI (Product Lock)...</span>
-            </div>
-          `;
-          return;
-        }
-
-        if (pack.imageUrl) {
-          slot.innerHTML = `
-            <img src="${pack.imageUrl}" alt="Generated ${packId}" class="w-full h-auto max-h-[420px] object-contain rounded-xl bg-slate-950 mx-auto" />
-            <div class="flex items-center justify-end gap-1.5 mt-2">
-              <button type="button" data-regen-img="${packId}" class="genesis-btn-compact">Jana Semula Gambar</button>
-              <a href="${pack.imageUrl}" download="genesis-${packId}.png" class="genesis-btn-compact text-cyan-300 border-cyan-400/50">Muat Turun PNG</a>
-            </div>
-          `;
-          slot.querySelector(`[data-regen-img="${packId}"]`)?.addEventListener('click', () => {
-            generateSinglePackImage(packId, getCreativeContext());
-          });
-          return;
-        }
-
+      if (dataUrl) {
+        slot.classList.add('has-image');
         slot.innerHTML = `
-          <div class="w-full py-8 px-3 text-center space-y-2">
-            <p class="text-xs text-rose-300">${escapeHtml(pack.imageError || 'Imej belum dijana.')}</p>
-            <button type="button" data-regen-img="${packId}" class="genesis-btn-compact">Cuba Jana Imej Semula</button>
-          </div>
+          <input type="file" accept="image/*" id="input-${key}" aria-label="Tukar gambar ${meta.label}" />
+          <img src="${dataUrl}" alt="${meta.label}" class="preview-img" />
+          <span class="preview-tag">✓ ${meta.tag}</span>
+          <button type="button" class="remove-img-btn" data-remove-key="${key}">Padam</button>
         `;
-        slot.querySelector(`[data-regen-img="${packId}"]`)?.addEventListener('click', () => {
-          generateSinglePackImage(packId, getCreativeContext());
-        });
-      }
-
-      function updatePackStoryboardImageUI(packId) {
-        const slot = document.getElementById(`pack-sb-img-${packId}`);
-        const pack = state.contentPacks[packId];
-        if (!slot || !pack) return;
-
-        if (pack.storyboardLoading) {
-          slot.innerHTML = `
-            <div class="w-full py-8 flex flex-col items-center justify-center gap-2 text-cyan-300 text-xs font-semibold">
-              <span class="spinner"></span>
-              <span>Menjana Storyboard Sheet (${state.sceneCount} Panel)...</span>
-            </div>
-          `;
-          return;
-        }
-
-        if (pack.storyboardImageUrl) {
-          slot.innerHTML = `
-            <img src="${pack.storyboardImageUrl}" alt="Storyboard ${packId}" class="w-full h-auto rounded-xl bg-slate-950" />
-            <div class="flex items-center justify-end gap-1.5 mt-2">
-              <a href="${pack.storyboardImageUrl}" download="genesis-storyboard-${packId}.png" class="genesis-btn-compact text-cyan-300 border-cyan-400/50">Muat Turun PNG</a>
-            </div>
-          `;
-          return;
-        }
-
+      } else {
+        slot.classList.remove('has-image');
         slot.innerHTML = `
-          <div class="w-full py-6 px-3 text-center space-y-2">
-            <p class="text-xs text-rose-300 leading-relaxed">${escapeHtml(pack.storyboardError || 'Storyboard belum dijana.')}</p>
-            <button type="button" data-retry-sb-img="${packId}" class="genesis-btn-compact">Cuba Jana Imej Semula</button>
-          </div>
+          <input type="file" accept="image/*" id="input-${key}" aria-label="Muat naik gambar ${meta.label}" />
+          <div class="upload-icon">${meta.icon}</div>
+          <div class="upload-label">${meta.label}</div>
+          <div class="upload-hint">${meta.hint}</div>
         `;
-        slot.querySelector(`[data-retry-sb-img="${packId}"]`)?.addEventListener('click', () => {
-          generateSinglePackStoryboardImage(packId, getCreativeContext());
-        });
       }
 
-      function buildSingleOutputBoxHtml(packId, field, title, value, index = null) {
-        const idxAttr = index !== null ? `data-idx="${index}"` : '';
-        return `
-          <div class="genesis-subitem-box space-y-1.5">
-            <div class="flex items-center justify-between gap-2">
-              <span class="genesis-output-label">${escapeHtml(title)}</span>
-              <div class="flex items-center gap-1">
-                <button type="button" class="genesis-btn-compact" data-copy-field="${field}" data-pack="${packId}" ${idxAttr}>Copy</button>
-                <button type="button" class="genesis-btn-compact" data-regen-field="${field}" data-pack="${packId}" ${idxAttr}>Regenerate</button>
-              </div>
+      bindSlotInput(key);
+      updateUploadCounter();
+    }
+
+    function bindSlotInput(key) {
+      const input = document.getElementById(`input-${key}`);
+      if (!input) return;
+
+      input.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        const slot = document.getElementById(`slot-${key}`);
+        slot.querySelector('.upload-hint')?.insertAdjacentHTML('afterend', '<div style="font-size:10px;color:#22d3ee;margin-top:2px;">Memuatkan...</div>');
+
+        try {
+          const compressed = await compressAndroidImage(file);
+          uploadedImages[key] = compressed;
+          renderUploadSlot(key);
+          showToast(`Gambar ${slotMeta[key].label} berjaya dimuat naik!`);
+        } catch (err) {
+          showToast('Gagal membaca fail gambar. Cuba pilih gambar lain.');
+        } finally {
+          e.target.value = '';
+        }
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      const removeBtn = e.target.closest('[data-remove-key]');
+      if (removeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const key = removeBtn.dataset.removeKey;
+        uploadedImages[key] = null;
+        renderUploadSlot(key);
+        showToast('Gambar dipadam.');
+        return;
+      }
+
+      const copyBtn = e.target.closest('[data-copy-target]');
+      if (copyBtn) {
+        const target = document.getElementById(copyBtn.dataset.copyTarget);
+        if (target) {
+          navigator.clipboard?.writeText(target.innerText);
+          showToast('Teks berjaya disalin!');
+        }
+        return;
+      }
+
+      const copyRawBtn = e.target.closest('[data-copy-raw]');
+      if (copyRawBtn) {
+        navigator.clipboard?.writeText(copyRawBtn.dataset.copyRaw);
+        showToast('Prompt disalin!');
+      }
+    });
+
+    // Inisialisasi ketiga-tiga slot muat naik
+    ['product', 'character', 'location'].forEach(bindSlotInput);
+
+    // Tetapan API Key
+    const savedKey = localStorage.getItem('genesis_gemini_api_key') || '';
+    document.getElementById('geminiApiInput').value = savedKey;
+    document.getElementById('toggleApiBtn').addEventListener('click', () => {
+      const box = document.getElementById('apiBox');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    });
+    document.getElementById('saveApiBtn').addEventListener('click', () => {
+      const val = document.getElementById('geminiApiInput').value.trim();
+      localStorage.setItem('genesis_gemini_api_key', val);
+      document.getElementById('apiBox').style.display = 'none';
+      showToast('API Key disimpan!');
+    });
+
+    function buildLocalStudioPack({ name, usp, style, scene }) {
+      const prodLock = uploadedImages.product ? 'exact product packaging and label consistency from reference image' : `commercial packaging of ${name}`;
+      const charLock = uploadedImages.character ? 'consistent Malaysian creator model matching character reference' : 'friendly Malaysian content creator in natural smart-casual outfit';
+      const locLock = uploadedImages.location ? 'matching background environment from location reference' : 'modern sunlit Malaysian lifestyle interior with soft bokeh';
+      const extra = scene ? `, ${scene}` : '';
+
+      const prompts = [
+        {
+          title: 'Sudut 1 • Hero Close-Up Produk',
+          text: `Ultra-detailed commercial product photography of ${name}, ${prodLock}, resting on a sleek reflective surface, soft rim lighting, crisp studio droplets, 8k resolution, photorealistic, vertical 9:16${extra}.`
+        },
+        {
+          title: 'Sudut 2 • Lifestyle Pegangan Model (UGC)',
+          text: `Authentic vertical 9:16 lifestyle shot of ${charLock} holding ${name} near camera with a natural confident smile, ${prodLock}, ${locLock}, natural window daylight, shot on iPhone 15 Pro${extra}.`
+        },
+        {
+          title: 'Sudut 3 • Aksi & Tekstur Penggunaan',
+          text: `Macro dynamic action shot showcasing ${name} in active use, highlighting ${usp}, ${prodLock}, cinematic depth of field, vibrant natural color grading, vertical 9:16${extra}.`
+        },
+        {
+          title: 'Sudut 4 • Komposisi Flatlay & Iklan Promo',
+          text: `Aesthetic top-down flatlay arrangement featuring ${name} as centerpiece surrounded by natural supporting props, ${prodLock}, ${locLock}, clean negative space at top for TikTok headline text, vertical 9:16${extra}.`
+        }
+      ];
+
+      const videoPrompt = `Vertical 9:16 UGC commercial video (${style}). ${charLock} in ${locLock}, smoothly presenting ${name} (${prodLock}) toward the camera with natural hand movement and subtle camera push-in, warm daylight, realistic skin texture, crisp product focus${extra}.`;
+
+      const hooks = [
+        `1. "Menyesal baru tahu pasal ${name} ni sekarang — tengok hasil dia lepas guna!"`,
+        `2. "Kalau korang ada masalah yang sama, berhenti skrol 5 saat dan tengok ${name} ni."`,
+        `3. "Ramai tanya macam mana boleh dapat kesan ${usp} tanpa keluar modal besar."`,
+        `4. "Jujur cakap, mula-mula ingat ${name} ni biasa je, sekali cuba terus repeat!"`,
+        `5. "Stok promo ${name} dekat beg kuning memang selalu licin — siapa cepat dia dapat."`
+      ].join('\n');
+
+      const storyboard = [
+        `[0:00 - 0:03 | HOOK VISUAL] Close-up ${name} depan kamera + ekspresi terkejut puas hati.\nVO: "Seriuslah, guna ${name} je dah boleh rasa ${usp}?"`,
+        `[0:03 - 0:07 | DEMO & BUKTI] Tunjuk cara guna / tekstur sebenar produk dengan pencahayaan jelas.\nVO: "Paling best sebab dia senang guna dan memang sesuai untuk kegunaan harian."`,
+        `[0:07 - 0:10 | CTA BEG KUNING] Pegang produk sambil tunjuk ke arah beg kuning di bawah.\nVO: "Tekan beg kuning sekarang sebelum harga promo habis!"`
+      ].join('\n\n');
+
+      const caption = `Memang berbaloi cuba ${name}! ✨\n\nKelebihan utama:\n✅ ${usp}\n✅ Gaya ${style} — mudah & cepat nampak hasil\n✅ Penghantaran pantas terus ke pintu rumah\n\nKlik beg kuning sekarang sebelum stok promosi tamat! 🛒🔥\n\n#GenesisAI #TikTokShopMalaysia #RacunTikTok #ReviewJujur #BegKuning #FYP`;
+
+      return { prompts, videoPrompt, hooks, storyboard, caption };
+    }
+
+    document.getElementById('generateAllBtn').addEventListener('click', async () => {
+      const name = document.getElementById('productName').value.trim() || 'Produk Pilihan Anda';
+      const usp = document.getElementById('productUsp').value.trim() || 'Kualiti premium & kesan pantas';
+      const style = document.getElementById('contentStyle').value;
+      const scene = document.getElementById('sceneNote').value.trim();
+
+      const btn = document.getElementById('generateAllBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Menjana Studio Kandungan...';
+
+      try {
+        const result = buildLocalStudioPack({ name, usp, style, scene });
+        const grid = document.getElementById('imagePromptsGrid');
+        grid.innerHTML = result.prompts.map((item) => `
+          <div class="prompt-item">
+            <div class="prompt-item-head">
+              <span>${item.title}</span>
+              <button type="button" class="copy-mini-btn" data-copy-raw="${item.text.replace(/"/g, '&quot;')}">Salin</button>
             </div>
-            <textarea
-              class="genesis-prompt-box"
-              rows="2"
-              data-edit-field="${field}"
-              data-pack="${packId}"
-              ${idxAttr}
-            >${escapeHtml(value)}</textarea>
+            <div class="prompt-item-text">${item.text}</div>
           </div>
-        `;
+        `).join('');
+
+        document.getElementById('videoPromptOut').textContent = result.videoPrompt;
+        document.getElementById('hooksOut').textContent = result.hooks;
+        document.getElementById('storyboardOut').textContent = result.storyboard;
+        document.getElementById('captionOut').textContent = result.caption;
+
+        const outSec = document.getElementById('outputSection');
+        outSec.classList.add('visible');
+        outSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast('Semua prompt & skrip siap dijana!');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✨ Jana 4 Visual Prompt, Video & Skrip Viral';
       }
+    });
 
-      function buildStoryboardSectionHtml(packId, pack) {
-        const scenesHtml = (pack.storyboardScenes || []).map((sc, idx) =>
-          buildSingleOutputBoxHtml(packId, 'storyboardScene', sc.timeRange || `Scene ${idx + 1}`, sc.prompt, idx)
-        ).join('');
-
-        return `
-          <div class="genesis-subitem-box space-y-2 border-cyan-400/40">
-            <div class="flex items-center justify-between gap-2 flex-wrap">
-              <div class="flex items-center gap-1.5">
-                <span class="genesis-output-label text-cyan-300">Dynamic Storyboard</span>
-                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-400/40">
-                  ${state.sceneCount} Panel &bull; ${state.videoDuration}s
-                </span>
-              </div>
-              <div class="flex items-center gap-1 flex-wrap">
-                <button type="button" class="genesis-btn-compact" data-copy-field="storyboardMasterPrompt" data-pack="${packId}">Copy Prompt</button>
-                <button type="button" class="genesis-btn-compact" data-regen-sb-img="${packId}">Regenerate Storyboard</button>
-              </div>
-            </div>
-
-            <div id="pack-sb-img-${packId}" class="rounded-xl overflow-hidden bg-slate-950/80 border border-slate-800 p-1.5"></div>
-
-            <textarea
-              class="genesis-prompt-box"
-              rows="2"
-              data-edit-field="storyboardMasterPrompt"
-              data-pack="${packId}"
-            >${escapeHtml(pack.storyboardMasterPrompt || '')}</textarea>
-
-            <div class="space-y-1.5">${scenesHtml}</div>
-          </div>
-        `;
+    document.getElementById('saveCloudBtn').addEventListener('click', async () => {
+      const title = document.getElementById('productName').value.trim() || 'Projek Genesis V2';
+      const summary = document.getElementById('hooksOut').textContent.split('\n')[0] || 'Kempen Genesis AI V2.0';
+      if (window.GenesisWebApp && typeof window.GenesisWebApp.saveProject === 'function') {
+        try {
+          await window.GenesisWebApp.saveProject({ title, summary });
+          showToast('Projek disimpan ke Dashboard Cloud!');
+        } catch (err) {
+          showToast('Gagal simpan ke Cloud: ' + (err.message || 'Ralat'));
+        }
       }
-
-      function renderAllContentPacks() {
-        if (!els.contentPacksContainer) return;
-        const sel = state.selectedOutputs;
-        els.contentPacksContainer.innerHTML = PACK_DEFINITIONS.map((def) => {
-          const pack = state.contentPacks[def.id];
-          if (!pack) return '';
-
-          const blocks = [];
-
-          if (sel.imagePrompt) {
-            blocks.push(buildSingleOutputBoxHtml(def.id, 'imagePrompt', 'Prompt Gambar', pack.imagePrompt));
-          }
-
-          if (sel.videoPrompt) {
-            const vScenes = (pack.videoScenes || []).map((sc, idx) =>
-              buildSingleOutputBoxHtml(def.id, 'videoScene', `Prompt Video — ${sc.timeRange}`, sc.prompt, idx)
-            ).join('');
-            blocks.push(`<div class="space-y-1.5">${vScenes}</div>`);
-          }
-
-          if (sel.hooks) {
-            const hooksHtml = (pack.hooks || []).map((h, idx) =>
-              buildSingleOutputBoxHtml(def.id, 'hook', `Viral Hook ${idx + 1}`, h, idx)
-            ).join('');
-            blocks.push(`<div class="space-y-1.5">${hooksHtml}</div>`);
-          }
-
-          if (sel.captions) {
-            const capsHtml = (pack.captions || []).map((c, idx) =>
-              buildSingleOutputBoxHtml(def.id, 'caption', `Caption ${idx + 1}`, c, idx)
-            ).join('');
-            blocks.push(`<div c
+    });
+  </script>
+</body>
+</html>
